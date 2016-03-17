@@ -45,7 +45,9 @@ public class Network {
         getNames().forEach(System.out::println);
         System.out.println();
         System.out.println("--------------------------------------------------------------------------------");
-        getNames().forEach(System.out::println);
+        for (Edge edge : edges) {
+            System.out.println(edge.getParent().getName() + " --> " + edge.getChild().getName());
+        }
         System.out.println();
 
 

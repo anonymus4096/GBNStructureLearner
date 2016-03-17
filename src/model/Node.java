@@ -17,6 +17,8 @@ public class Node {
     public Node(String s, Network network1) {
         name = s;
         network = network1;
+        parents = new HashSet<>();
+        children = new HashSet<>();
     }
 
 

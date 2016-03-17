@@ -1,20 +1,24 @@
 package model;
 
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by Benedek on 3/17/2016.
  */
 public class Node {
     private final String name;
-    private List<Node> parents;
-    private List<Node> children;
+    private Set<Node> parents;
+    private Set<Node> children;
     private int id = -1;
+    private Network network;
 
 
-    public Node(String s) {
+    public Node(String s, Network network1) {
         name = s;
+        network = network1;
     }
+
 
     public String getName() {
         return name;
@@ -24,11 +28,28 @@ public class Node {
         return id;
     }
 
-    public List<Node> getChildren() {
+    public Set<Node> getChildren() {
         return children;
     }
 
-    public List<Node> getParents() {
+    public Set<Node> getParents() {
         return parents;
+    }
+
+    public Set<Node> getDescendants() {
+        Set<Node> descendants = new HashSet<>();
+        descendants = getChildren();
+        getAllDescendants(descendants);
+        return descendants;
+    }
+
+    private void getAllDescendants(Set<Node> currentDescendants) {
+        for (Node n : currentDescendants) {
+            if (currentDescendants.addAll(getChildren())) {
+                getAllDescendants(currentDescendants);
+            } else {
+                return;
+            }
+        }
     }
 }

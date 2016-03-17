@@ -24,6 +24,5 @@ public class BayesNetwork {
             network.addRandomEdge();
         }
 
-
     }
 }

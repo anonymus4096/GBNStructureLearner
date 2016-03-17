@@ -52,4 +52,12 @@ public class Node {
             }
         }
     }
+
+    public void addNewChild(Node n) {
+        children.add(n);
+    }
+
+    public void addNewParent(Node n) {
+        parents.add(n);
+    }
 }

@@ -81,4 +81,8 @@ public class Network {
         // will never get here
         return null;
     }
+
+    public void addNode(Node n1) {
+        nodes.add(n1);
+    }
 }

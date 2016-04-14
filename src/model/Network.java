@@ -49,8 +49,6 @@ public class Network {
             System.out.println(edge.getParent().getName() + " --> " + edge.getChild().getName());
         }
         System.out.println();
-
-
     }
 
     public void addNewEdge(Node parent, Node child) {
@@ -84,5 +82,34 @@ public class Network {
 
     public void addNode(Node n1) {
         nodes.add(n1);
+    }
+
+    public void isDAG(){
+        Set<Node> start = this.getNodes();
+        List<Node> result = new ArrayList<>();
+        Set<Node> next = new HashSet<>();
+
+        for (Node n : start){
+            if (n.getParents() == null || n.getParents().size() == 0){
+                next.add(n);
+                start.remove(n);
+            }
+        }
+
+        while (next.size() > 0){
+            Node current = next.iterator().next();
+            next.remove(current);
+            result.add(current);
+
+            for (Node n : current.getChildren()){
+                if (!next.contains(n) && result.containsAll(n.getParents())){
+                    next.add(n);
+                    start.remove(n);
+                    //TODO
+                }
+            }
+        }
+
+
     }
 }

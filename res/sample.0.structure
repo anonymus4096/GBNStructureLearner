@@ -1,0 +1,950 @@
+Gene0	Gene1	child	0.161356	
+Gene0	Gene2	child	0.177809	
+Gene0	Gene3	child	0.192458	
+Gene0	Gene2	childs_other_parent	0.853477	Gene3
+Gene0	Gene6	child	1.58745	
+Gene0	Gene7	child	0.775616	
+Gene0	Gene4	childs_other_parent	-0.338622	Gene7
+Gene0	Gene5	childs_other_parent	0.705984	Gene7
+Gene0	Gene3	childs_other_parent	-0.656181	Gene7
+Gene0	Gene9	child	1.1652	
+Gene0	Gene12	child	0.685741	
+Gene0	Gene7	childs_other_parent	0.528587	Gene12
+Gene0	Gene16	child	0.722853	
+Gene0	Gene7	childs_other_parent	0.207803	Gene16
+Gene0	Gene21	child	0.681252	
+Gene0	Gene8	childs_other_parent	0.642861	Gene21
+Gene0	Gene3	childs_other_parent	-0.197018	Gene21
+Gene0	Gene30	child	0.166849	
+Gene0	Gene42	child	0.164237	
+Gene0	Gene20	childs_other_parent	-0.568681	Gene42
+Gene0	Gene27	childs_other_parent	-0.314142	Gene42
+Gene0	Gene52	child	0.21326	
+Gene0	Gene48	childs_other_parent	0.389814	Gene52
+Gene0	Gene46	childs_other_parent	-3.86053	Gene52
+Gene0	Gene58	child	0.217592	
+Gene0	Gene26	childs_other_parent	1.97758	Gene58
+
+Gene1	Gene0	parent	0.161356	
+Gene1	Gene5	child	-0.349853	
+Gene1	Gene4	childs_other_parent	-0.215691	Gene5
+Gene1	Gene19	child	-0.131273	
+Gene1	Gene3	childs_other_parent	-0.244642	Gene19
+Gene1	Gene10	childs_other_parent	0.244397	Gene19
+Gene1	Gene24	child	-0.136146	
+Gene1	Gene12	childs_other_parent	-0.591885	Gene24
+Gene1	Gene19	childs_other_parent	-0.286429	Gene24
+Gene1	Gene27	child	-0.256998	
+Gene1	Gene13	childs_other_parent	0.301484	Gene27
+Gene1	Gene2	childs_other_parent	0.139518	Gene27
+Gene1	Gene4	childs_other_parent	-0.223396	Gene27
+Gene1	Gene3	childs_other_parent	-0.376014	Gene27
+Gene1	Gene25	childs_other_parent	-1.57214	Gene27
+Gene1	Gene32	child	-0.856691	
+Gene1	Gene7	childs_other_parent	0.352941	Gene32
+Gene1	Gene37	child	-0.154105	
+Gene1	Gene28	childs_other_parent	0.191996	Gene37
+Gene1	Gene9	childs_other_parent	0.534976	Gene37
+Gene1	Gene43	child	-0.116148	
+Gene1	Gene24	childs_other_parent	-0.181001	Gene43
+
+Gene2	Gene0	parent	0.177809	
+Gene2	Gene3	child	0.853477	
+Gene2	Gene0	childs_other_parent	0.192458	Gene3
+Gene2	Gene4	child	0.205511	
+Gene2	Gene8	child	0.323232	
+Gene2	Gene3	childs_other_parent	-0.0820464	Gene8
+Gene2	Gene6	childs_other_parent	0.702017	Gene8
+Gene2	Gene13	child	0.196227	
+Gene2	Gene3	childs_other_parent	-0.381521	Gene13
+Gene2	Gene9	childs_other_parent	0.140381	Gene13
+Gene2	Gene27	child	0.139518	
+Gene2	Gene13	childs_other_parent	0.301484	Gene27
+Gene2	Gene1	childs_other_parent	-0.256998	Gene27
+Gene2	Gene4	childs_other_parent	-0.223396	Gene27
+Gene2	Gene3	childs_other_parent	-0.376014	Gene27
+Gene2	Gene25	childs_other_parent	-1.57214	Gene27
+Gene2	Gene47	child	0.102487	
+Gene2	Gene8	childs_other_parent	0.141996	Gene47
+Gene2	Gene86	child	0.622652	
+Gene2	Gene83	childs_other_parent	0.952541	Gene86
+
+Gene3	Gene2	parent	0.853477	
+Gene3	Gene0	parent	0.192458	
+Gene3	Gene7	child	-0.656181	
+Gene3	Gene0	childs_other_parent	0.775616	Gene7
+Gene3	Gene4	childs_other_parent	-0.338622	Gene7
+Gene3	Gene5	childs_other_parent	0.705984	Gene7
+Gene3	Gene8	child	-0.0820464	
+Gene3	Gene2	childs_other_parent	0.323232	Gene8
+Gene3	Gene6	childs_other_parent	0.702017	Gene8
+Gene3	Gene13	child	-0.381521	
+Gene3	Gene2	childs_other_parent	0.196227	Gene13
+Gene3	Gene9	childs_other_parent	0.140381	Gene13
+Gene3	Gene14	child	-0.323032	
+Gene3	Gene9	childs_other_parent	0.414162	Gene14
+Gene3	Gene15	child	-0.266081	
+Gene3	Gene19	child	-0.244642	
+Gene3	Gene1	childs_other_parent	-0.131273	Gene19
+Gene3	Gene10	childs_other_parent	0.244397	Gene19
+Gene3	Gene20	child	-0.0897701	
+Gene3	Gene18	childs_other_parent	-0.873687	Gene20
+Gene3	Gene10	childs_other_parent	0.18085	Gene20
+Gene3	Gene21	child	-0.197018	
+Gene3	Gene8	childs_other_parent	0.642861	Gene21
+Gene3	Gene0	childs_other_parent	0.681252	Gene21
+Gene3	Gene27	child	-0.376014	
+Gene3	Gene13	childs_other_parent	0.301484	Gene27
+Gene3	Gene2	childs_other_parent	0.139518	Gene27
+Gene3	Gene1	childs_other_parent	-0.256998	Gene27
+Gene3	Gene4	childs_other_parent	-0.223396	Gene27
+Gene3	Gene25	childs_other_parent	-1.57214	Gene27
+Gene3	Gene34	child	-0.482519	
+Gene3	Gene21	childs_other_parent	-0.695225	Gene34
+Gene3	Gene9	childs_other_parent	0.237361	Gene34
+Gene3	Gene24	childs_other_parent	-0.284398	Gene34
+Gene3	Gene14	childs_other_parent	-0.102178	Gene34
+Gene3	Gene35	child	-2.00364	
+Gene3	Gene15	childs_other_parent	0.0935718	Gene35
+Gene3	Gene49	child	-0.214692	
+Gene3	Gene4	childs_other_parent	-0.262427	Gene49
+
+Gene4	Gene2	parent	0.205511	
+Gene4	Gene5	child	-0.215691	
+Gene4	Gene1	childs_other_parent	-0.349853	Gene5
+Gene4	Gene7	child	-0.338622	
+Gene4	Gene0	childs_other_parent	0.775616	Gene7
+Gene4	Gene5	childs_other_parent	0.705984	Gene7
+Gene4	Gene3	childs_other_parent	-0.656181	Gene7
+Gene4	Gene11	child	-0.227338	
+Gene4	Gene18	child	-0.128092	
+Gene4	Gene15	childs_other_parent	0.101845	Gene18
+Gene4	Gene9	childs_other_parent	0.292807	Gene18
+Gene4	Gene16	childs_other_parent	0.434702	Gene18
+Gene4	Gene27	child	-0.223396	
+Gene4	Gene13	childs_other_parent	0.301484	Gene27
+Gene4	Gene2	childs_other_parent	0.139518	Gene27
+Gene4	Gene1	childs_other_parent	-0.256998	Gene27
+Gene4	Gene3	childs_other_parent	-0.376014	Gene27
+Gene4	Gene25	childs_other_parent	-1.57214	Gene27
+Gene4	Gene49	child	-0.262427	
+Gene4	Gene3	childs_other_parent	-0.214692	Gene49
+Gene4	Gene56	child	-0.257555	
+Gene4	Gene18	childs_other_parent	-0.119571	Gene56
+Gene4	Gene53	childs_other_parent	0.538463	Gene56
+Gene4	Gene17	childs_other_parent	0.561178	Gene56
+Gene4	Gene45	childs_other_parent	-0.264286	Gene56
+
+Gene5	Gene1	parent	-0.349853	
+Gene5	Gene4	parent	-0.215691	
+Gene5	Gene7	child	0.705984	
+Gene5	Gene0	childs_other_parent	0.775616	Gene7
+Gene5	Gene4	childs_other_parent	-0.338622	Gene7
+Gene5	Gene3	childs_other_parent	-0.656181	Gene7
+Gene5	Gene26	child	0.123625	
+Gene5	Gene9	childs_other_parent	0.375065	Gene26
+Gene5	Gene33	child	0.718234	
+
+Gene6	Gene0	parent	1.58745	
+Gene6	Gene8	child	0.702017	
+Gene6	Gene2	childs_other_parent	0.323232	Gene8
+Gene6	Gene3	childs_other_parent	-0.0820464	Gene8
+Gene6	Gene73	child	0.196474	
+Gene6	Gene88	child	1.04402	
+Gene6	Gene40	childs_other_parent	-0.221904	Gene88
+
+Gene7	Gene0	parent	0.775616	
+Gene7	Gene4	parent	-0.338622	
+Gene7	Gene5	parent	0.705984	
+Gene7	Gene3	parent	-0.656181	
+Gene7	Gene12	child	0.528587	
+Gene7	Gene0	childs_other_parent	0.685741	Gene12
+Gene7	Gene16	child	0.207803	
+Gene7	Gene0	childs_other_parent	0.722853	Gene16
+Gene7	Gene32	child	0.352941	
+Gene7	Gene1	childs_other_parent	-0.856691	Gene32
+Gene7	Gene55	child	0.676193	
+Gene7	Gene24	childs_other_parent	-0.0771753	Gene55
+Gene7	Gene37	childs_other_parent	-0.191249	Gene55
+Gene7	Gene39	childs_other_parent	0.16407	Gene55
+Gene7	Gene43	childs_other_parent	0.316923	Gene55
+Gene7	Gene8	childs_other_parent	0.146252	Gene55
+Gene7	Gene38	childs_other_parent	0.444244	Gene55
+Gene7	Gene98	child	0.405791	
+
+Gene8	Gene2	parent	0.323232	
+Gene8	Gene3	parent	-0.0820464	
+Gene8	Gene6	parent	0.702017	
+Gene8	Gene21	child	0.642861	
+Gene8	Gene3	childs_other_parent	-0.197018	Gene21
+Gene8	Gene0	childs_other_parent	0.681252	Gene21
+Gene8	Gene47	child	0.141996	
+Gene8	Gene2	childs_other_parent	0.102487	Gene47
+Gene8	Gene55	child	0.146252	
+Gene8	Gene24	childs_other_parent	-0.0771753	Gene55
+Gene8	Gene37	childs_other_parent	-0.191249	Gene55
+Gene8	Gene39	childs_other_parent	0.16407	Gene55
+Gene8	Gene43	childs_other_parent	0.316923	Gene55
+Gene8	Gene7	childs_other_parent	0.676193	Gene55
+Gene8	Gene38	childs_other_parent	0.444244	Gene55
+
+Gene9	Gene0	parent	1.1652	
+Gene9	Gene10	child	0.697798	
+Gene9	Gene13	child	0.140381	
+Gene9	Gene2	childs_other_parent	0.196227	Gene13
+Gene9	Gene3	childs_other_parent	-0.381521	Gene13
+Gene9	Gene14	child	0.414162	
+Gene9	Gene3	childs_other_parent	-0.323032	Gene14
+Gene9	Gene18	child	0.292807	
+Gene9	Gene15	childs_other_parent	0.101845	Gene18
+Gene9	Gene16	childs_other_parent	0.434702	Gene18
+Gene9	Gene4	childs_other_parent	-0.128092	Gene18
+Gene9	Gene26	child	0.375065	
+Gene9	Gene5	childs_other_parent	0.123625	Gene26
+Gene9	Gene29	child	0.572744	
+Gene9	Gene34	child	0.237361	
+Gene9	Gene3	childs_other_parent	-0.482519	Gene34
+Gene9	Gene21	childs_other_parent	-0.695225	Gene34
+Gene9	Gene24	childs_other_parent	-0.284398	Gene34
+Gene9	Gene14	childs_other_parent	-0.102178	Gene34
+Gene9	Gene36	child	2.71277	
+Gene9	Gene24	childs_other_parent	-0.203825	Gene36
+Gene9	Gene12	childs_other_parent	-0.212617	Gene36
+Gene9	Gene37	child	0.534976	
+Gene9	Gene28	childs_other_parent	0.191996	Gene37
+Gene9	Gene1	childs_other_parent	-0.154105	Gene37
+Gene9	Gene38	child	0.481664	
+Gene9	Gene46	child	0.359438	
+Gene9	Gene74	child	0.28125	
+Gene9	Gene43	childs_other_parent	0.105952	Gene74
+Gene9	Gene54	childs_other_parent	-0.284313	Gene74
+Gene9	Gene18	childs_other_parent	-0.354885	Gene74
+Gene9	Gene56	childs_other_parent	-0.164432	Gene74
+Gene9	Gene90	child	4.67836	
+Gene9	Gene77	childs_other_parent	-0.165025	Gene90
+Gene9	Gene19	childs_other_parent	-0.823623	Gene90
+Gene9	Gene91	child	0.773417	
+Gene9	Gene94	child	0.33363	
+Gene9	Gene93	childs_other_parent	0.184703	Gene94
+Gene9	Gene28	childs_other_parent	0.308181	Gene94
+Gene9	Gene69	childs_other_parent	-0.360595	Gene94
+Gene9	Gene14	childs_other_parent	-0.2032	Gene94
+Gene9	Gene36	childs_other_parent	0.582727	Gene94
+
+Gene10	Gene9	parent	0.697798	
+Gene10	Gene17	child	0.164955	
+Gene10	Gene19	child	0.244397	
+Gene10	Gene1	childs_other_parent	-0.131273	Gene19
+Gene10	Gene3	childs_other_parent	-0.244642	Gene19
+Gene10	Gene20	child	0.18085	
+Gene10	Gene3	childs_other_parent	-0.0897701	Gene20
+Gene10	Gene18	childs_other_parent	-0.873687	Gene20
+Gene10	Gene45	child	0.157847	
+
+Gene11	Gene4	parent	-0.227338	
+Gene11	Gene54	child	-0.149748	
+Gene11	Gene22	childs_other_parent	0.857185	Gene54
+
+Gene12	Gene7	parent	0.528587	
+Gene12	Gene0	parent	0.685741	
+Gene12	Gene24	child	-0.591885	
+Gene12	Gene1	childs_other_parent	-0.136146	Gene24
+Gene12	Gene19	childs_other_parent	-0.286429	Gene24
+Gene12	Gene36	child	-0.212617	
+Gene12	Gene24	childs_other_parent	-0.203825	Gene36
+Gene12	Gene9	childs_other_parent	2.71277	Gene36
+Gene12	Gene39	child	-0.0727488	
+Gene12	Gene25	childs_other_parent	-0.136626	Gene39
+
+Gene13	Gene2	parent	0.196227	
+Gene13	Gene3	parent	-0.381521	
+Gene13	Gene9	parent	0.140381	
+Gene13	Gene27	child	0.301484	
+Gene13	Gene2	childs_other_parent	0.139518	Gene27
+Gene13	Gene1	childs_other_parent	-0.256998	Gene27
+Gene13	Gene4	childs_other_parent	-0.223396	Gene27
+Gene13	Gene3	childs_other_parent	-0.376014	Gene27
+Gene13	Gene25	childs_other_parent	-1.57214	Gene27
+Gene13	Gene70	child	1.29602	
+Gene13	Gene97	child	0.151447	
+Gene13	Gene43	childs_other_parent	2.09197	Gene97
+Gene13	Gene22	childs_other_parent	0.15126	Gene97
+
+Gene14	Gene3	parent	-0.323032	
+Gene14	Gene9	parent	0.414162	
+Gene14	Gene22	child	-0.782978	
+Gene14	Gene34	child	-0.102178	
+Gene14	Gene3	childs_other_parent	-0.482519	Gene34
+Gene14	Gene21	childs_other_parent	-0.695225	Gene34
+Gene14	Gene9	childs_other_parent	0.237361	Gene34
+Gene14	Gene24	childs_other_parent	-0.284398	Gene34
+Gene14	Gene57	child	-0.134372	
+Gene14	Gene94	child	-0.2032	
+Gene14	Gene93	childs_other_parent	0.184703	Gene94
+Gene14	Gene28	childs_other_parent	0.308181	Gene94
+Gene14	Gene69	childs_other_parent	-0.360595	Gene94
+Gene14	Gene36	childs_other_parent	0.582727	Gene94
+Gene14	Gene9	childs_other_parent	0.33363	Gene94
+
+Gene15	Gene3	parent	-0.266081	
+Gene15	Gene18	child	0.101845	
+Gene15	Gene9	childs_other_parent	0.292807	Gene18
+Gene15	Gene16	childs_other_parent	0.434702	Gene18
+Gene15	Gene4	childs_other_parent	-0.128092	Gene18
+Gene15	Gene25	child	0.133935	
+Gene15	Gene31	child	0.232616	
+Gene15	Gene35	child	0.0935718	
+Gene15	Gene3	childs_other_parent	-2.00364	Gene35
+
+Gene16	Gene0	parent	0.722853	
+Gene16	Gene7	parent	0.207803	
+Gene16	Gene18	child	0.434702	
+Gene16	Gene15	childs_other_parent	0.101845	Gene18
+Gene16	Gene9	childs_other_parent	0.292807	Gene18
+Gene16	Gene4	childs_other_parent	-0.128092	Gene18
+Gene16	Gene50	child	2.40311	
+Gene16	Gene35	childs_other_parent	0.218369	Gene50
+Gene16	Gene43	childs_other_parent	0.385499	Gene50
+Gene16	Gene85	child	0.926198	
+Gene16	Gene43	childs_other_parent	0.047631	Gene85
+Gene16	Gene69	childs_other_parent	-0.601902	Gene85
+
+Gene17	Gene10	parent	0.164955	
+Gene17	Gene56	child	0.561178	
+Gene17	Gene4	childs_other_parent	-0.257555	Gene56
+Gene17	Gene18	childs_other_parent	-0.119571	Gene56
+Gene17	Gene53	childs_other_parent	0.538463	Gene56
+Gene17	Gene45	childs_other_parent	-0.264286	Gene56
+
+Gene18	Gene15	parent	0.101845	
+Gene18	Gene9	parent	0.292807	
+Gene18	Gene16	parent	0.434702	
+Gene18	Gene4	parent	-0.128092	
+Gene18	Gene20	child	-0.873687	
+Gene18	Gene3	childs_other_parent	-0.0897701	Gene20
+Gene18	Gene10	childs_other_parent	0.18085	Gene20
+Gene18	Gene23	child	-0.492397	
+Gene18	Gene48	child	-0.336852	
+Gene18	Gene34	childs_other_parent	-0.259151	Gene48
+Gene18	Gene46	childs_other_parent	-0.232406	Gene48
+Gene18	Gene56	child	-0.119571	
+Gene18	Gene4	childs_other_parent	-0.257555	Gene56
+Gene18	Gene53	childs_other_parent	0.538463	Gene56
+Gene18	Gene17	childs_other_parent	0.561178	Gene56
+Gene18	Gene45	childs_other_parent	-0.264286	Gene56
+Gene18	Gene74	child	-0.354885	
+Gene18	Gene9	childs_other_parent	0.28125	Gene74
+Gene18	Gene43	childs_other_parent	0.105952	Gene74
+Gene18	Gene54	childs_other_parent	-0.284313	Gene74
+Gene18	Gene56	childs_other_parent	-0.164432	Gene74
+Gene18	Gene81	child	-0.392534	
+Gene18	Gene47	childs_other_parent	-0.637322	Gene81
+Gene18	Gene75	childs_other_parent	0.0885164	Gene81
+
+Gene19	Gene1	parent	-0.131273	
+Gene19	Gene3	parent	-0.244642	
+Gene19	Gene10	parent	0.244397	
+Gene19	Gene24	child	-0.286429	
+Gene19	Gene12	childs_other_parent	-0.591885	Gene24
+Gene19	Gene1	childs_other_parent	-0.136146	Gene24
+Gene19	Gene44	child	-0.398636	
+Gene19	Gene37	childs_other_parent	-0.247861	Gene44
+Gene19	Gene61	child	-0.980784	
+Gene19	Gene29	childs_other_parent	-0.524391	Gene61
+Gene19	Gene51	childs_other_parent	-0.784349	Gene61
+Gene19	Gene58	childs_other_parent	-0.465723	Gene61
+Gene19	Gene45	childs_other_parent	-0.320726	Gene61
+Gene19	Gene31	childs_other_parent	0.210246	Gene61
+Gene19	Gene46	childs_other_parent	-0.522555	Gene61
+Gene19	Gene20	childs_other_parent	-0.506086	Gene61
+Gene19	Gene27	childs_other_parent	-0.503381	Gene61
+Gene19	Gene69	child	-0.516877	
+Gene19	Gene53	childs_other_parent	0.263688	Gene69
+Gene19	Gene33	childs_other_parent	-0.172555	Gene69
+Gene19	Gene26	childs_other_parent	0.0799625	Gene69
+Gene19	Gene90	child	-0.823623	
+Gene19	Gene77	childs_other_parent	-0.165025	Gene90
+Gene19	Gene9	childs_other_parent	4.67836	Gene90
+
+Gene20	Gene3	parent	-0.0897701	
+Gene20	Gene18	parent	-0.873687	
+Gene20	Gene10	parent	0.18085	
+Gene20	Gene42	child	-0.568681	
+Gene20	Gene0	childs_other_parent	0.164237	Gene42
+Gene20	Gene27	childs_other_parent	-0.314142	Gene42
+Gene20	Gene61	child	-0.506086	
+Gene20	Gene19	childs_other_parent	-0.980784	Gene61
+Gene20	Gene29	childs_other_parent	-0.524391	Gene61
+Gene20	Gene51	childs_other_parent	-0.784349	Gene61
+Gene20	Gene58	childs_other_parent	-0.465723	Gene61
+Gene20	Gene45	childs_other_parent	-0.320726	Gene61
+Gene20	Gene31	childs_other_parent	0.210246	Gene61
+Gene20	Gene46	childs_other_parent	-0.522555	Gene61
+Gene20	Gene27	childs_other_parent	-0.503381	Gene61
+
+Gene21	Gene8	parent	0.642861	
+Gene21	Gene3	parent	-0.197018	
+Gene21	Gene0	parent	0.681252	
+Gene21	Gene28	child	-1.23814	
+Gene21	Gene34	child	-0.695225	
+Gene21	Gene3	childs_other_parent	-0.482519	Gene34
+Gene21	Gene9	childs_other_parent	0.237361	Gene34
+Gene21	Gene24	childs_other_parent	-0.284398	Gene34
+Gene21	Gene14	childs_other_parent	-0.102178	Gene34
+Gene21	Gene79	child	-0.834223	
+Gene21	Gene71	childs_other_parent	-0.217904	Gene79
+
+Gene22	Gene14	parent	-0.782978	
+Gene22	Gene53	child	0.12217	
+Gene22	Gene40	childs_other_parent	-0.645181	Gene53
+Gene22	Gene54	child	0.857185	
+Gene22	Gene11	childs_other_parent	-0.149748	Gene54
+Gene22	Gene97	child	0.15126	
+Gene22	Gene43	childs_other_parent	2.09197	Gene97
+Gene22	Gene13	childs_other_parent	0.151447	Gene97
+
+Gene23	Gene18	parent	-0.492397	
+Gene23	Gene41	child	-0.627257	
+Gene23	Gene33	childs_other_parent	-0.179103	Gene41
+Gene23	Gene60	child	-0.330702	
+Gene23	Gene38	childs_other_parent	0.996221	Gene60
+
+Gene24	Gene12	parent	-0.591885	
+Gene24	Gene1	parent	-0.136146	
+Gene24	Gene19	parent	-0.286429	
+Gene24	Gene34	child	-0.284398	
+Gene24	Gene3	childs_other_parent	-0.482519	Gene34
+Gene24	Gene21	childs_other_parent	-0.695225	Gene34
+Gene24	Gene9	childs_other_parent	0.237361	Gene34
+Gene24	Gene14	childs_other_parent	-0.102178	Gene34
+Gene24	Gene36	child	-0.203825	
+Gene24	Gene12	childs_other_parent	-0.212617	Gene36
+Gene24	Gene9	childs_other_parent	2.71277	Gene36
+Gene24	Gene43	child	-0.181001	
+Gene24	Gene1	childs_other_parent	-0.116148	Gene43
+Gene24	Gene55	child	-0.0771753	
+Gene24	Gene37	childs_other_parent	-0.191249	Gene55
+Gene24	Gene39	childs_other_parent	0.16407	Gene55
+Gene24	Gene43	childs_other_parent	0.316923	Gene55
+Gene24	Gene8	childs_other_parent	0.146252	Gene55
+Gene24	Gene7	childs_other_parent	0.676193	Gene55
+Gene24	Gene38	childs_other_parent	0.444244	Gene55
+
+Gene25	Gene15	parent	0.133935	
+Gene25	Gene27	child	-1.57214	
+Gene25	Gene13	childs_other_parent	0.301484	Gene27
+Gene25	Gene2	childs_other_parent	0.139518	Gene27
+Gene25	Gene1	childs_other_parent	-0.256998	Gene27
+Gene25	Gene4	childs_other_parent	-0.223396	Gene27
+Gene25	Gene3	childs_other_parent	-0.376014	Gene27
+Gene25	Gene39	child	-0.136626	
+Gene25	Gene12	childs_other_parent	-0.0727488	Gene39
+
+Gene26	Gene5	parent	0.123625	
+Gene26	Gene9	parent	0.375065	
+Gene26	Gene58	child	1.97758	
+Gene26	Gene0	childs_other_parent	0.217592	Gene58
+Gene26	Gene69	child	0.0799625	
+Gene26	Gene53	childs_other_parent	0.263688	Gene69
+Gene26	Gene33	childs_other_parent	-0.172555	Gene69
+Gene26	Gene19	childs_other_parent	-0.516877	Gene69
+
+Gene27	Gene13	parent	0.301484	
+Gene27	Gene2	parent	0.139518	
+Gene27	Gene1	parent	-0.256998	
+Gene27	Gene4	parent	-0.223396	
+Gene27	Gene3	parent	-0.376014	
+Gene27	Gene25	parent	-1.57214	
+Gene27	Gene42	child	-0.314142	
+Gene27	Gene0	childs_other_parent	0.164237	Gene42
+Gene27	Gene20	childs_other_parent	-0.568681	Gene42
+Gene27	Gene61	child	-0.503381	
+Gene27	Gene19	childs_other_parent	-0.980784	Gene61
+Gene27	Gene29	childs_other_parent	-0.524391	Gene61
+Gene27	Gene51	childs_other_parent	-0.784349	Gene61
+Gene27	Gene58	childs_other_parent	-0.465723	Gene61
+Gene27	Gene45	childs_other_parent	-0.320726	Gene61
+Gene27	Gene31	childs_other_parent	0.210246	Gene61
+Gene27	Gene46	childs_other_parent	-0.522555	Gene61
+Gene27	Gene20	childs_other_parent	-0.506086	Gene61
+Gene27	Gene76	child	-0.610045	
+
+Gene28	Gene21	parent	-1.23814	
+Gene28	Gene37	child	0.191996	
+Gene28	Gene9	childs_other_parent	0.534976	Gene37
+Gene28	Gene1	childs_other_parent	-0.154105	Gene37
+Gene28	Gene94	child	0.308181	
+Gene28	Gene93	childs_other_parent	0.184703	Gene94
+Gene28	Gene69	childs_other_parent	-0.360595	Gene94
+Gene28	Gene14	childs_other_parent	-0.2032	Gene94
+Gene28	Gene36	childs_other_parent	0.582727	Gene94
+Gene28	Gene9	childs_other_parent	0.33363	Gene94
+
+Gene29	Gene9	parent	0.572744	
+Gene29	Gene61	child	-0.524391	
+Gene29	Gene19	childs_other_parent	-0.980784	Gene61
+Gene29	Gene51	childs_other_parent	-0.784349	Gene61
+Gene29	Gene58	childs_other_parent	-0.465723	Gene61
+Gene29	Gene45	childs_other_parent	-0.320726	Gene61
+Gene29	Gene31	childs_other_parent	0.210246	Gene61
+Gene29	Gene46	childs_other_parent	-0.522555	Gene61
+Gene29	Gene20	childs_other_parent	-0.506086	Gene61
+Gene29	Gene27	childs_other_parent	-0.503381	Gene61
+Gene29	Gene95	child	-0.176892	
+
+Gene30	Gene0	parent	0.166849	
+Gene30	Gene40	child	0.155738	
+Gene30	Gene36	childs_other_parent	0.153716	Gene40
+Gene30	Gene89	child	0.231607	
+Gene30	Gene74	childs_other_parent	0.645385	Gene89
+
+Gene31	Gene15	parent	0.232616	
+Gene31	Gene61	child	0.210246	
+Gene31	Gene19	childs_other_parent	-0.980784	Gene61
+Gene31	Gene29	childs_other_parent	-0.524391	Gene61
+Gene31	Gene51	childs_other_parent	-0.784349	Gene61
+Gene31	Gene58	childs_other_parent	-0.465723	Gene61
+Gene31	Gene45	childs_other_parent	-0.320726	Gene61
+Gene31	Gene46	childs_other_parent	-0.522555	Gene61
+Gene31	Gene20	childs_other_parent	-0.506086	Gene61
+Gene31	Gene27	childs_other_parent	-0.503381	Gene61
+
+Gene32	Gene1	parent	-0.856691	
+Gene32	Gene7	parent	0.352941	
+
+Gene33	Gene5	parent	0.718234	
+Gene33	Gene41	child	-0.179103	
+Gene33	Gene23	childs_other_parent	-0.627257	Gene41
+Gene33	Gene51	child	-3.28804	
+Gene33	Gene69	child	-0.172555	
+Gene33	Gene53	childs_other_parent	0.263688	Gene69
+Gene33	Gene26	childs_other_parent	0.0799625	Gene69
+Gene33	Gene19	childs_other_parent	-0.516877	Gene69
+Gene33	Gene80	child	-0.21943	
+Gene33	Gene93	child	-0.139796	
+Gene33	Gene96	child	-0.0881776	
+
+Gene34	Gene3	parent	-0.482519	
+Gene34	Gene21	parent	-0.695225	
+Gene34	Gene9	parent	0.237361	
+Gene34	Gene24	parent	-0.284398	
+Gene34	Gene14	parent	-0.102178	
+Gene34	Gene48	child	-0.259151	
+Gene34	Gene18	childs_other_parent	-0.336852	Gene48
+Gene34	Gene46	childs_other_parent	-0.232406	Gene48
+
+Gene35	Gene3	parent	-2.00364	
+Gene35	Gene15	parent	0.0935718	
+Gene35	Gene50	child	0.218369	
+Gene35	Gene16	childs_other_parent	2.40311	Gene50
+Gene35	Gene43	childs_other_parent	0.385499	Gene50
+Gene35	Gene65	child	0.714325	
+
+Gene36	Gene24	parent	-0.203825	
+Gene36	Gene12	parent	-0.212617	
+Gene36	Gene9	parent	2.71277	
+Gene36	Gene40	child	0.153716	
+Gene36	Gene30	childs_other_parent	0.155738	Gene40
+Gene36	Gene94	child	0.582727	
+Gene36	Gene93	childs_other_parent	0.184703	Gene94
+Gene36	Gene28	childs_other_parent	0.308181	Gene94
+Gene36	Gene69	childs_other_parent	-0.360595	Gene94
+Gene36	Gene14	childs_other_parent	-0.2032	Gene94
+Gene36	Gene9	childs_other_parent	0.33363	Gene94
+
+Gene37	Gene28	parent	0.191996	
+Gene37	Gene9	parent	0.534976	
+Gene37	Gene1	parent	-0.154105	
+Gene37	Gene44	child	-0.247861	
+Gene37	Gene19	childs_other_parent	-0.398636	Gene44
+Gene37	Gene55	child	-0.191249	
+Gene37	Gene24	childs_other_parent	-0.0771753	Gene55
+Gene37	Gene39	childs_other_parent	0.16407	Gene55
+Gene37	Gene43	childs_other_parent	0.316923	Gene55
+Gene37	Gene8	childs_other_parent	0.146252	Gene55
+Gene37	Gene7	childs_other_parent	0.676193	Gene55
+Gene37	Gene38	childs_other_parent	0.444244	Gene55
+Gene37	Gene68	child	-11.083	
+Gene37	Gene45	childs_other_parent	-0.254362	Gene68
+
+Gene38	Gene9	parent	0.481664	
+Gene38	Gene55	child	0.444244	
+Gene38	Gene24	childs_other_parent	-0.0771753	Gene55
+Gene38	Gene37	childs_other_parent	-0.191249	Gene55
+Gene38	Gene39	childs_other_parent	0.16407	Gene55
+Gene38	Gene43	childs_other_parent	0.316923	Gene55
+Gene38	Gene8	childs_other_parent	0.146252	Gene55
+Gene38	Gene7	childs_other_parent	0.676193	Gene55
+Gene38	Gene59	child	0.206921	
+Gene38	Gene60	child	0.996221	
+Gene38	Gene23	childs_other_parent	-0.330702	Gene60
+
+Gene39	Gene12	parent	-0.0727488	
+Gene39	Gene25	parent	-0.136626	
+Gene39	Gene55	child	0.16407	
+Gene39	Gene24	childs_other_parent	-0.0771753	Gene55
+Gene39	Gene37	childs_other_parent	-0.191249	Gene55
+Gene39	Gene43	childs_other_parent	0.316923	Gene55
+Gene39	Gene8	childs_other_parent	0.146252	Gene55
+Gene39	Gene7	childs_other_parent	0.676193	Gene55
+Gene39	Gene38	childs_other_parent	0.444244	Gene55
+Gene39	Gene83	child	0.452683	
+
+Gene40	Gene36	parent	0.153716	
+Gene40	Gene30	parent	0.155738	
+Gene40	Gene53	child	-0.645181	
+Gene40	Gene22	childs_other_parent	0.12217	Gene53
+Gene40	Gene72	child	-0.233205	
+Gene40	Gene59	childs_other_parent	0.141277	Gene72
+Gene40	Gene88	child	-0.221904	
+Gene40	Gene6	childs_other_parent	1.04402	Gene88
+
+Gene41	Gene33	parent	-0.179103	
+Gene41	Gene23	parent	-0.627257	
+
+Gene42	Gene0	parent	0.164237	
+Gene42	Gene20	parent	-0.568681	
+Gene42	Gene27	parent	-0.314142	
+
+Gene43	Gene24	parent	-0.181001	
+Gene43	Gene1	parent	-0.116148	
+Gene43	Gene50	child	0.385499	
+Gene43	Gene16	childs_other_parent	2.40311	Gene50
+Gene43	Gene35	childs_other_parent	0.218369	Gene50
+Gene43	Gene55	child	0.316923	
+Gene43	Gene24	childs_other_parent	-0.0771753	Gene55
+Gene43	Gene37	childs_other_parent	-0.191249	Gene55
+Gene43	Gene39	childs_other_parent	0.16407	Gene55
+Gene43	Gene8	childs_other_parent	0.146252	Gene55
+Gene43	Gene7	childs_other_parent	0.676193	Gene55
+Gene43	Gene38	childs_other_parent	0.444244	Gene55
+Gene43	Gene74	child	0.105952	
+Gene43	Gene9	childs_other_parent	0.28125	Gene74
+Gene43	Gene54	childs_other_parent	-0.284313	Gene74
+Gene43	Gene18	childs_other_parent	-0.354885	Gene74
+Gene43	Gene56	childs_other_parent	-0.164432	Gene74
+Gene43	Gene85	child	0.047631	
+Gene43	Gene16	childs_other_parent	0.926198	Gene85
+Gene43	Gene69	childs_other_parent	-0.601902	Gene85
+Gene43	Gene97	child	2.09197	
+Gene43	Gene22	childs_other_parent	0.15126	Gene97
+Gene43	Gene13	childs_other_parent	0.151447	Gene97
+
+Gene44	Gene37	parent	-0.247861	
+Gene44	Gene19	parent	-0.398636	
+Gene44	Gene66	child	0.364266	
+Gene44	Gene77	child	0.110031	
+
+Gene45	Gene10	parent	0.157847	
+Gene45	Gene56	child	-0.264286	
+Gene45	Gene4	childs_other_parent	-0.257555	Gene56
+Gene45	Gene18	childs_other_parent	-0.119571	Gene56
+Gene45	Gene53	childs_other_parent	0.538463	Gene56
+Gene45	Gene17	childs_other_parent	0.561178	Gene56
+Gene45	Gene61	child	-0.320726	
+Gene45	Gene19	childs_other_parent	-0.980784	Gene61
+Gene45	Gene29	childs_other_parent	-0.524391	Gene61
+Gene45	Gene51	childs_other_parent	-0.784349	Gene61
+Gene45	Gene58	childs_other_parent	-0.465723	Gene61
+Gene45	Gene31	childs_other_parent	0.210246	Gene61
+Gene45	Gene46	childs_other_parent	-0.522555	Gene61
+Gene45	Gene20	childs_other_parent	-0.506086	Gene61
+Gene45	Gene27	childs_other_parent	-0.503381	Gene61
+Gene45	Gene68	child	-0.254362	
+Gene45	Gene37	childs_other_parent	-11.083	Gene68
+
+Gene46	Gene9	parent	0.359438	
+Gene46	Gene48	child	-0.232406	
+Gene46	Gene18	childs_other_parent	-0.336852	Gene48
+Gene46	Gene34	childs_other_parent	-0.259151	Gene48
+Gene46	Gene52	child	-3.86053	
+Gene46	Gene48	childs_other_parent	0.389814	Gene52
+Gene46	Gene0	childs_other_parent	0.21326	Gene52
+Gene46	Gene61	child	-0.522555	
+Gene46	Gene19	childs_other_parent	-0.980784	Gene61
+Gene46	Gene29	childs_other_parent	-0.524391	Gene61
+Gene46	Gene51	childs_other_parent	-0.784349	Gene61
+Gene46	Gene58	childs_other_parent	-0.465723	Gene61
+Gene46	Gene45	childs_other_parent	-0.320726	Gene61
+Gene46	Gene31	childs_other_parent	0.210246	Gene61
+Gene46	Gene20	childs_other_parent	-0.506086	Gene61
+Gene46	Gene27	childs_other_parent	-0.503381	Gene61
+Gene46	Gene78	child	-0.206645	
+Gene46	Gene64	childs_other_parent	0.360182	Gene78
+Gene46	Gene63	childs_other_parent	-1.55476	Gene78
+
+Gene47	Gene8	parent	0.141996	
+Gene47	Gene2	parent	0.102487	
+Gene47	Gene81	child	-0.637322	
+Gene47	Gene18	childs_other_parent	-0.392534	Gene81
+Gene47	Gene75	childs_other_parent	0.0885164	Gene81
+
+Gene48	Gene18	parent	-0.336852	
+Gene48	Gene34	parent	-0.259151	
+Gene48	Gene46	parent	-0.232406	
+Gene48	Gene52	child	0.389814	
+Gene48	Gene46	childs_other_parent	-3.86053	Gene52
+Gene48	Gene0	childs_other_parent	0.21326	Gene52
+
+Gene49	Gene4	parent	-0.262427	
+Gene49	Gene3	parent	-0.214692	
+
+Gene50	Gene16	parent	2.40311	
+Gene50	Gene35	parent	0.218369	
+Gene50	Gene43	parent	0.385499	
+
+Gene51	Gene33	parent	-3.28804	
+Gene51	Gene61	child	-0.784349	
+Gene51	Gene19	childs_other_parent	-0.980784	Gene61
+Gene51	Gene29	childs_other_parent	-0.524391	Gene61
+Gene51	Gene58	childs_other_parent	-0.465723	Gene61
+Gene51	Gene45	childs_other_parent	-0.320726	Gene61
+Gene51	Gene31	childs_other_parent	0.210246	Gene61
+Gene51	Gene46	childs_other_parent	-0.522555	Gene61
+Gene51	Gene20	childs_other_parent	-0.506086	Gene61
+Gene51	Gene27	childs_other_parent	-0.503381	Gene61
+Gene51	Gene71	child	-0.110888	
+
+Gene52	Gene48	parent	0.389814	
+Gene52	Gene46	parent	-3.86053	
+Gene52	Gene0	parent	0.21326	
+
+Gene53	Gene22	parent	0.12217	
+Gene53	Gene40	parent	-0.645181	
+Gene53	Gene56	child	0.538463	
+Gene53	Gene4	childs_other_parent	-0.257555	Gene56
+Gene53	Gene18	childs_other_parent	-0.119571	Gene56
+Gene53	Gene17	childs_other_parent	0.561178	Gene56
+Gene53	Gene45	childs_other_parent	-0.264286	Gene56
+Gene53	Gene69	child	0.263688	
+Gene53	Gene33	childs_other_parent	-0.172555	Gene69
+Gene53	Gene26	childs_other_parent	0.0799625	Gene69
+Gene53	Gene19	childs_other_parent	-0.516877	Gene69
+
+Gene54	Gene22	parent	0.857185	
+Gene54	Gene11	parent	-0.149748	
+Gene54	Gene64	child	-0.215085	
+Gene54	Gene74	child	-0.284313	
+Gene54	Gene9	childs_other_parent	0.28125	Gene74
+Gene54	Gene43	childs_other_parent	0.105952	Gene74
+Gene54	Gene18	childs_other_parent	-0.354885	Gene74
+Gene54	Gene56	childs_other_parent	-0.164432	Gene74
+
+Gene55	Gene24	parent	-0.0771753	
+Gene55	Gene37	parent	-0.191249	
+Gene55	Gene39	parent	0.16407	
+Gene55	Gene43	parent	0.316923	
+Gene55	Gene8	parent	0.146252	
+Gene55	Gene7	parent	0.676193	
+Gene55	Gene38	parent	0.444244	
+
+Gene56	Gene4	parent	-0.257555	
+Gene56	Gene18	parent	-0.119571	
+Gene56	Gene53	parent	0.538463	
+Gene56	Gene17	parent	0.561178	
+Gene56	Gene45	parent	-0.264286	
+Gene56	Gene74	child	-0.164432	
+Gene56	Gene9	childs_other_parent	0.28125	Gene74
+Gene56	Gene43	childs_other_parent	0.105952	Gene74
+Gene56	Gene54	childs_other_parent	-0.284313	Gene74
+Gene56	Gene18	childs_other_parent	-0.354885	Gene74
+
+Gene57	Gene14	parent	-0.134372	
+Gene57	Gene87	child	-0.195871	
+
+Gene58	Gene26	parent	1.97758	
+Gene58	Gene0	parent	0.217592	
+Gene58	Gene61	child	-0.465723	
+Gene58	Gene19	childs_other_parent	-0.980784	Gene61
+Gene58	Gene29	childs_other_parent	-0.524391	Gene61
+Gene58	Gene51	childs_other_parent	-0.784349	Gene61
+Gene58	Gene45	childs_other_parent	-0.320726	Gene61
+Gene58	Gene31	childs_other_parent	0.210246	Gene61
+Gene58	Gene46	childs_other_parent	-0.522555	Gene61
+Gene58	Gene20	childs_other_parent	-0.506086	Gene61
+Gene58	Gene27	childs_other_parent	-0.503381	Gene61
+Gene58	Gene67	child	-0.182524	
+
+Gene59	Gene38	parent	0.206921	
+Gene59	Gene62	child	0.723932	
+Gene59	Gene60	childs_other_parent	0.381236	Gene62
+Gene59	Gene72	child	0.141277	
+Gene59	Gene40	childs_other_parent	-0.233205	Gene72
+Gene59	Gene92	child	0.553238	
+Gene59	Gene86	childs_other_parent	-0.333513	Gene92
+Gene59	Gene73	childs_other_parent	-0.187419	Gene92
+Gene59	Gene82	childs_other_parent	0.577507	Gene92
+
+Gene60	Gene38	parent	0.996221	
+Gene60	Gene23	parent	-0.330702	
+Gene60	Gene62	child	0.381236	
+Gene60	Gene59	childs_other_parent	0.723932	Gene62
+
+Gene61	Gene19	parent	-0.980784	
+Gene61	Gene29	parent	-0.524391	
+Gene61	Gene51	parent	-0.784349	
+Gene61	Gene58	parent	-0.465723	
+Gene61	Gene45	parent	-0.320726	
+Gene61	Gene31	parent	0.210246	
+Gene61	Gene46	parent	-0.522555	
+Gene61	Gene20	parent	-0.506086	
+Gene61	Gene27	parent	-0.503381	
+
+Gene62	Gene60	parent	0.381236	
+Gene62	Gene59	parent	0.723932	
+Gene62	Gene63	child	-0.103019	
+
+Gene63	Gene62	parent	-0.103019	
+Gene63	Gene78	child	-1.55476	
+Gene63	Gene46	childs_other_parent	-0.206645	Gene78
+Gene63	Gene64	childs_other_parent	0.360182	Gene78
+
+Gene64	Gene54	parent	-0.215085	
+Gene64	Gene78	child	0.360182	
+Gene64	Gene46	childs_other_parent	-0.206645	Gene78
+Gene64	Gene63	childs_other_parent	-1.55476	Gene78
+
+Gene65	Gene35	parent	0.714325	
+
+Gene66	Gene44	parent	0.364266	
+
+Gene67	Gene58	parent	-0.182524	
+
+Gene68	Gene45	parent	-0.254362	
+Gene68	Gene37	parent	-11.083	
+Gene68	Gene75	child	-0.121026	
+Gene68	Gene82	child	-0.0616612	
+
+Gene69	Gene53	parent	0.263688	
+Gene69	Gene33	parent	-0.172555	
+Gene69	Gene26	parent	0.0799625	
+Gene69	Gene19	parent	-0.516877	
+Gene69	Gene85	child	-0.601902	
+Gene69	Gene16	childs_other_parent	0.926198	Gene85
+Gene69	Gene43	childs_other_parent	0.047631	Gene85
+Gene69	Gene94	child	-0.360595	
+Gene69	Gene93	childs_other_parent	0.184703	Gene94
+Gene69	Gene28	childs_other_parent	0.308181	Gene94
+Gene69	Gene14	childs_other_parent	-0.2032	Gene94
+Gene69	Gene36	childs_other_parent	0.582727	Gene94
+Gene69	Gene9	childs_other_parent	0.33363	Gene94
+
+Gene70	Gene13	parent	1.29602	
+
+Gene71	Gene51	parent	-0.110888	
+Gene71	Gene79	child	-0.217904	
+Gene71	Gene21	childs_other_parent	-0.834223	Gene79
+
+Gene72	Gene59	parent	0.141277	
+Gene72	Gene40	parent	-0.233205	
+
+Gene73	Gene6	parent	0.196474	
+Gene73	Gene92	child	-0.187419	
+Gene73	Gene86	childs_other_parent	-0.333513	Gene92
+Gene73	Gene59	childs_other_parent	0.553238	Gene92
+Gene73	Gene82	childs_other_parent	0.577507	Gene92
+
+Gene74	Gene9	parent	0.28125	
+Gene74	Gene43	parent	0.105952	
+Gene74	Gene54	parent	-0.284313	
+Gene74	Gene18	parent	-0.354885	
+Gene74	Gene56	parent	-0.164432	
+Gene74	Gene89	child	0.645385	
+Gene74	Gene30	childs_other_parent	0.231607	Gene89
+
+Gene75	Gene68	parent	-0.121026	
+Gene75	Gene81	child	0.0885164	
+Gene75	Gene47	childs_other_parent	-0.637322	Gene81
+Gene75	Gene18	childs_other_parent	-0.392534	Gene81
+
+Gene76	Gene27	parent	-0.610045	
+
+Gene77	Gene44	parent	0.110031	
+Gene77	Gene90	child	-0.165025	
+Gene77	Gene9	childs_other_parent	4.67836	Gene90
+Gene77	Gene19	childs_other_parent	-0.823623	Gene90
+
+Gene78	Gene46	parent	-0.206645	
+Gene78	Gene64	parent	0.360182	
+Gene78	Gene63	parent	-1.55476	
+
+Gene79	Gene71	parent	-0.217904	
+Gene79	Gene21	parent	-0.834223	
+Gene79	Gene84	child	-0.349162	
+
+Gene80	Gene33	parent	-0.21943	
+
+Gene81	Gene47	parent	-0.637322	
+Gene81	Gene18	parent	-0.392534	
+Gene81	Gene75	parent	0.0885164	
+
+Gene82	Gene68	parent	-0.0616612	
+Gene82	Gene92	child	0.577507	
+Gene82	Gene86	childs_other_parent	-0.333513	Gene92
+Gene82	Gene73	childs_other_parent	-0.187419	Gene92
+Gene82	Gene59	childs_other_parent	0.553238	Gene92
+
+Gene83	Gene39	parent	0.452683	
+Gene83	Gene86	child	0.952541	
+Gene83	Gene2	childs_other_parent	0.622652	Gene86
+
+Gene84	Gene79	parent	-0.349162	
+Gene84	Gene99	child	0.126016	
+
+Gene85	Gene16	parent	0.926198	
+Gene85	Gene43	parent	0.047631	
+Gene85	Gene69	parent	-0.601902	
+
+Gene86	Gene2	parent	0.622652	
+Gene86	Gene83	parent	0.952541	
+Gene86	Gene92	child	-0.333513	
+Gene86	Gene73	childs_other_parent	-0.187419	Gene92
+Gene86	Gene59	childs_other_parent	0.553238	Gene92
+Gene86	Gene82	childs_other_parent	0.577507	Gene92
+
+Gene87	Gene57	parent	-0.195871	
+
+Gene88	Gene6	parent	1.04402	
+Gene88	Gene40	parent	-0.221904	
+
+Gene89	Gene30	parent	0.231607	
+Gene89	Gene74	parent	0.645385	
+
+Gene90	Gene77	parent	-0.165025	
+Gene90	Gene9	parent	4.67836	
+Gene90	Gene19	parent	-0.823623	
+
+Gene91	Gene9	parent	0.773417	
+
+Gene92	Gene86	parent	-0.333513	
+Gene92	Gene73	parent	-0.187419	
+Gene92	Gene59	parent	0.553238	
+Gene92	Gene82	parent	0.577507	
+
+Gene93	Gene33	parent	-0.139796	
+Gene93	Gene94	child	0.184703	
+Gene93	Gene28	childs_other_parent	0.308181	Gene94
+Gene93	Gene69	childs_other_parent	-0.360595	Gene94
+Gene93	Gene14	childs_other_parent	-0.2032	Gene94
+Gene93	Gene36	childs_other_parent	0.582727	Gene94
+Gene93	Gene9	childs_other_parent	0.33363	Gene94
+
+Gene94	Gene93	parent	0.184703	
+Gene94	Gene28	parent	0.308181	
+Gene94	Gene69	parent	-0.360595	
+Gene94	Gene14	parent	-0.2032	
+Gene94	Gene36	parent	0.582727	
+Gene94	Gene9	parent	0.33363	
+
+Gene95	Gene29	parent	-0.176892	
+
+Gene96	Gene33	parent	-0.0881776	
+
+Gene97	Gene43	parent	2.09197	
+Gene97	Gene22	parent	0.15126	
+Gene97	Gene13	parent	0.151447	
+
+Gene98	Gene7	parent	0.405791	
+
+Gene99	Gene84	parent	0.126016	
+

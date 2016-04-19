@@ -21,7 +21,6 @@ public class Node {
         children = new HashSet<>();
     }
 
-
     public String getName() {
         return name;
     }
@@ -62,4 +61,5 @@ public class Node {
     public void addNewParent(Node n) {
         parents.add(n);
     }
+
 }

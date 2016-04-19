@@ -41,6 +41,11 @@ public class Network {
 
     public void printNetwork() {
         System.out.println("NETWORK CONTAINS " + nodes.size() + " NODES AND " + edges.size() + " EDGES");
+        if (isDAG()) {
+            System.out.println("NETWORK IS ACYCLIC");
+        } else {
+            System.out.println("NETWORK IS NOT ACYCLIC");
+        }
         System.out.println("--------------------------------------------------------------------------------");
         getNames().forEach(System.out::println);
         System.out.println();
@@ -52,6 +57,11 @@ public class Network {
     }
 
     public void addNewEdge(Node parent, Node child) {
+        if (!containsNodeWithName(parent.getName())) {
+            throw new IllegalArgumentException("Parent does not exist with the name " + parent.getName() + " when trying to add new edges");
+        } else if (!containsNodeWithName(child.getName())) {
+            throw new IllegalArgumentException("Child does not exist with the name " + child.getName() + " when trying to add new edges");
+        }
         edges.add(new Edge(parent, child));
         parent.addNewChild(child);
         child.addNewParent(parent);
@@ -84,32 +94,74 @@ public class Network {
         nodes.add(n1);
     }
 
-    public void isDAG(){
-        Set<Node> start = this.getNodes();
+    public boolean isDAG() {
+        // set that contains all the vertices at first
+        Set<String> start = new HashSet<>(this.getNames());
+        // will contain one of the topological orders if exists such a thing
         List<Node> result = new ArrayList<>();
+        // the next potential nodes to be considered
         Set<Node> next = new HashSet<>();
 
-        for (Node n : start){
-            if (n.getParents() == null || n.getParents().size() == 0){
-                next.add(n);
-                start.remove(n);
-            }
-        }
-
-        while (next.size() > 0){
-            Node current = next.iterator().next();
-            next.remove(current);
-            result.add(current);
-
-            for (Node n : current.getChildren()){
-                if (!next.contains(n) && result.containsAll(n.getParents())){
+        // move the root vertices from the start set to the next set
+        Iterator<String> iter = start.iterator();
+        while (iter.hasNext()) {
+            Node n = getNodeWithName(iter.next());
+            if (n != null) {
+                if (n.getParents() == null || n.getParents().size() == 0) {
                     next.add(n);
-                    start.remove(n);
-                    //TODO
                 }
             }
         }
 
+        //start.removeAll(next);
 
+        while (next.size() > 0) {
+            Node current = next.iterator().next();
+            Set<Node> potentialNext = current.getChildren();
+            next.remove(current);
+            result.add(current);
+
+            for (Node n : potentialNext) {
+                if (!next.contains(n) && result.containsAll(n.getParents())) {
+                    next.add(n);
+                    start.remove(n);
+                }
+            }
+        }
+
+        if (getNodes().size() == result.size()) {
+            return true;
+        } else {
+            return false;
+        }
+
+
+    }
+
+    public boolean containsNodeWithName(String name) {
+        for (Node n : nodes) {
+            if (n.getName().equals(name)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public Node getNodeWithName(String name) {
+        for (Node n : nodes) {
+            if (n.getName().equals(name)) {
+                return n;
+            }
+        }
+        return null;
+    }
+
+    public boolean containsEdge(Node parent, Node child) {
+        for (Edge e : edges) {
+            if (e.getChild() == child && e.getParent() == parent) {
+                return true;
+            }
+        }
+        return false;
     }
 }

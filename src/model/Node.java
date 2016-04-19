@@ -10,7 +10,6 @@ public class Node {
     private final String name;
     private Set<Node> parents;
     private Set<Node> children;
-    private int id = -1;
     private Network network;
 
 
@@ -23,10 +22,6 @@ public class Node {
 
     public String getName() {
         return name;
-    }
-
-    public int getId() {
-        return id;
     }
 
     public Set<Node> getChildren() {

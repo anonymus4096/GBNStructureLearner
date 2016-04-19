@@ -40,6 +40,7 @@ public class Node {
     }
 
     private void getAllDescendants(Set<Node> currentDescendants) {
+        //TODO need to use the Node n somehow
         for (Node n : currentDescendants) {
             if (currentDescendants.addAll(getChildren())) {
                 getAllDescendants(currentDescendants);

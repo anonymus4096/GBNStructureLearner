@@ -2,6 +2,8 @@ package utils;
 
 import model.Network;
 
+import static utils.GraphFunctions.containsNodeWithName;
+
 /**
  * Created by Benedek on 3/17/2016.
  */
@@ -17,7 +19,7 @@ public class NameGenerator {
                 builder.append(characters.charAt(rand.nextInt(characters.length())));
             }
             // if it has the node already, start over
-            if (network.containsNodeWithName(builder.toString())) {
+            if (containsNodeWithName(network.getNodes(), builder.toString())) {
                 builder = new StringBuilder();
             }
         }

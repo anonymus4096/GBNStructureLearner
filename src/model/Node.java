@@ -2,6 +2,9 @@ package model;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
+
+import static utils.GraphFunctions.containsNodeWithName;
 
 /**
  * Created by Benedek on 3/17/2016.
@@ -33,21 +36,28 @@ public class Node implements Comparable {
     }
 
     public Set<Node> getDescendants() {
-        Set<Node> descendants = new HashSet<>();
-        descendants = getChildren();
-        getAllDescendants(descendants);
+        Set<Node> descendants = getChildren();
+        descendants = getAllDescendants(descendants);
         return descendants;
     }
 
-    private void getAllDescendants(Set<Node> currentDescendants) {
-        //TODO need to use the Node n somehow
+    private Set<Node> getAllDescendants(Set<Node> currentDescendants) {
+        Set<Node> newDescendants = new TreeSet<>(currentDescendants);
         for (Node n : currentDescendants) {
-            if (currentDescendants.addAll(getChildren())) {
-                getAllDescendants(currentDescendants);
+            boolean anyNewNodes = false;
+            for (Node child : n.getChildren()) {
+                if (!containsNodeWithName(newDescendants, child.getName())) {
+                    newDescendants.add(child);
+                    anyNewNodes = true;
+                }
+            }
+            if (anyNewNodes){
+                newDescendants = getAllDescendants(newDescendants);
             } else {
-                return;
+                break;
             }
         }
+        return newDescendants;
     }
 
     public void addNewChild(Node n) {

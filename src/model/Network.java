@@ -2,6 +2,8 @@ package model;
 
 import java.util.*;
 
+import static utils.GraphFunctions.containsNodeWithName;
+import static utils.GraphFunctions.getNodeWithName;
 import static utils.NameGenerator.generateRandomName;
 
 /**
@@ -23,6 +25,10 @@ public class Network {
 
     public Set<Node> getNodes() {
         return nodes;
+    }
+
+    public Set<Edge> getEdges() {
+        return edges;
     }
 
     public List<String> getNames() {
@@ -57,9 +63,9 @@ public class Network {
     }
 
     public void addNewEdge(Node parent, Node child) {
-        if (!containsNodeWithName(parent.getName())) {
+        if (!containsNodeWithName(nodes, parent.getName())) {
             throw new IllegalArgumentException("Parent does not exist with the name " + parent.getName() + " when trying to add new edges");
-        } else if (!containsNodeWithName(child.getName())) {
+        } else if (!containsNodeWithName(nodes, child.getName())) {
             throw new IllegalArgumentException("Child does not exist with the name " + child.getName() + " when trying to add new edges");
         }
         edges.add(new Edge(parent, child));
@@ -105,7 +111,7 @@ public class Network {
         // move the root vertices from the start set to the next set
         Iterator<String> iter = start.iterator();
         while (iter.hasNext()) {
-            Node n = getNodeWithName(iter.next());
+            Node n = getNodeWithName(nodes, iter.next());
             if (n != null) {
                 if (n.getParents() == null || n.getParents().size() == 0) {
                     next.add(n);
@@ -136,30 +142,19 @@ public class Network {
 
     }
 
-    public boolean containsNodeWithName(String name) {
-        for (Node n : nodes) {
-            if (n.getName().equals(name)) {
-                return true;
-            }
-        }
-        return false;
+
+    /**
+     * determines whether adding the edge with the given parameters would mess up the DAG property
+     * @param parent start of the edge
+     * @param child end of the edge
+     * @return return true if it violates the DAG condition
+     */
+    public boolean violatesDAG(Node parent, Node child) {
+        return hasPath(child, parent);
     }
 
-    public Node getNodeWithName(String name) {
-        for (Node n : nodes) {
-            if (n.getName().equals(name)) {
-                return n;
-            }
-        }
-        return null;
+    private boolean hasPath(Node from, Node to) {
+        return from.getDescendants().contains(to);
     }
 
-    public boolean containsEdge(Node parent, Node child) {
-        for (Edge e : edges) {
-            if (e.getChild() == child && e.getParent() == parent) {
-                return true;
-            }
-        }
-        return false;
-    }
 }

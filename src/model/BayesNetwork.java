@@ -12,24 +12,31 @@ import java.util.Scanner;
  * Created by Benedek on 3/17/2016.
  */
 public class BayesNetwork {
-    private static final int lambda = 2;
+    private static double lambda = 10;
     public static Network network;
-    private static int numberOfVertices = 1000;
+    private static int numberOfVertices = 100;
+    static String format = "%03d";
 
 
     public static void main(String[] args) {
         network = new Network();
-        //createRandomNetwork(10);
-        createRandomDAGNetwork(100);
+        createRandomNetwork(10);
+        //createRandomDAGNetwork(1000);
         //importNetworkFromCSV("res/sample.0.data.csv");
         network.printNetwork();
     }
 
     private static void createRandomDAGNetwork(int numberOfNodes) {
         numberOfVertices = numberOfNodes;
+        format = "%0" + String.valueOf(numberOfVertices).length() + "d";
+
+        if (lambda > ((double) numberOfVertices-1)/2){
+            lambda = ((double) numberOfVertices-1)/2;
+        }
 
         for (int i = 0; i < numberOfVertices; i++) {
-            network.addNode(new Node("GENE" + i, network));
+            String name = "GENE" + String.format(format, i);
+            network.addNode(new Node(name, network));
         }
 
         for (int i = 0; i < numberOfVertices * lambda; i++) {
@@ -39,8 +46,8 @@ public class BayesNetwork {
             if (index1 != index2) {
                 int parentIndex = Math.min(index1, index2);
                 int childIndex = Math.max(index1, index2);
-                Node parent = network.getNodeWithName("GENE" + parentIndex);
-                Node child = network.getNodeWithName("GENE" + childIndex);
+                Node parent = network.getNodeWithName("GENE" + String.format(format, parentIndex));
+                Node child = network.getNodeWithName("GENE" + String.format(format, childIndex));
                 // if the edge was already in the network
                 if (child != null && parent != null && !network.containsEdge(parent, child)) {
                     network.addNewEdge(parent, child);
@@ -55,6 +62,9 @@ public class BayesNetwork {
 
     private static void createRandomNetwork(int numberOfNodes) {
         numberOfVertices = numberOfNodes;
+        if (lambda > ((double) numberOfVertices-1)/2){
+            lambda = ((double) numberOfVertices-1)/2;
+        }
 
         for (int i = 0; i < numberOfVertices; i++) {
             network.addRandomNode();

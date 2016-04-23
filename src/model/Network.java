@@ -12,8 +12,8 @@ public class Network {
     private Set<Edge> edges;
 
     public Network() {
-        nodes = new HashSet<>();
-        edges = new HashSet<>();
+        nodes = new TreeSet<>();
+        edges = new TreeSet<>();
     }
 
     public Network(Set<Node> nodes) {
@@ -35,7 +35,7 @@ public class Network {
     }
 
     public void addRandomNode() {
-        Node temp = new Node(generateRandomName(nodes), this);
+        Node temp = new Node(generateRandomName(this), this);
         nodes.add(temp);
     }
 
@@ -112,8 +112,6 @@ public class Network {
                 }
             }
         }
-
-        //start.removeAll(next);
 
         while (next.size() > 0) {
             Node current = next.iterator().next();

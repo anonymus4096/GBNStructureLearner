@@ -6,7 +6,7 @@ import java.util.Set;
 /**
  * Created by Benedek on 3/17/2016.
  */
-public class Node {
+public class Node implements Comparable {
     private final String name;
     private Set<Node> parents;
     private Set<Node> children;
@@ -58,4 +58,13 @@ public class Node {
         parents.add(n);
     }
 
+    @Override
+    public int compareTo(Object o) {
+        Node n = (Node) o;
+        if (getName().compareTo(n.getName()) > 0) {
+            return 1;
+        } else {
+            return -1;
+        }
+    }
 }

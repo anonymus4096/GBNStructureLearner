@@ -13,7 +13,7 @@ import java.util.TreeSet;
 public class HillClimbing {
     private Network network;
     private Set<Move> possibleMoves;
-    private int maxNumberOfParents;
+    private int maxNumberOfParents = 5;
 
     /**
      * constructor

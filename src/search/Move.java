@@ -9,6 +9,7 @@ import java.util.TreeSet;
 /**
  * Created by Benedek on 4/23/2016.
  * Encapsulates one move that can be made in the process of building a DAG network (adding a set of edges)
+ * The class is equipped to represent adding multiple edges, though we will only be using this with a single edge
  */
 public class Move {
     private Set<Edge> edges;

@@ -1,6 +1,7 @@
 package search;
 
 import model.Edge;
+import model.Network;
 import model.Node;
 
 import java.util.Set;
@@ -15,12 +16,15 @@ public class Move {
     private Set<Edge> edges;
     private Node commonChild;
     private Double score = null;
+    private Network network;
 
-    public Move() {
+    public Move(Network network) {
         edges = new TreeSet<>();
+        this.network = network;
     }
 
-    public Move(Edge firstEdge){
+    public Move(Network network, Edge firstEdge){
+        this.network = network;
         edges = new TreeSet<Edge>();
         edges.add(firstEdge);
         commonChild = firstEdge.getChild();
@@ -48,10 +52,15 @@ public class Move {
      * @return score of the move
      */
     public double calculateScore(){
-        // TODO do some magic
-        double calculatedScore = 0;
+        double calculatedScore = getDummyScore();
         score = calculatedScore;
         return calculatedScore;
+    }
+
+    private double getDummyScore() {
+        double dummyScore = 0.0;
+        // TODO
+        return dummyScore;
     }
 
     public Set<Edge> getEdges() {

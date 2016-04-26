@@ -4,14 +4,17 @@ import model.Edge;
 import model.Network;
 import model.Node;
 
+import java.util.HashSet;
 import java.util.Set;
-import java.util.TreeSet;
+
+import static utils.GraphFunctions.containsEdge;
 
 /**
  * Created by Benedek on 4/23/2016.
  */
 public class HillClimbing {
     private Network network;
+    private Network realNetwork;
     private Set<Move> possibleMoves;
     private int maxNumberOfParents = 5;
 
@@ -19,15 +22,16 @@ public class HillClimbing {
      * constructor
      * @param network network object that contains all the nodes and edges already set
      */
-    public HillClimbing(Network network) {
+    public HillClimbing(Network network, Network realNetwork) {
         this.network = network;
+        this.realNetwork = realNetwork;
     }
 
     /**
      * looks at all possible moves, finds the best one and makes it
      * @return returns the score of the best move
      */
-    private Double stepOne(){
+    public Double stepOne(){
         possibleMoves = calculatePossibleMoves();
         if (possibleMoves.size() == 0){
             return null;
@@ -53,8 +57,8 @@ public class HillClimbing {
      * or when there is no more edge to be set
      */
     public void climbHill(){
-        Double scoreBestMove = 0.1;
-        while (scoreBestMove != null && scoreBestMove > 0){
+        Double scoreBestMove = 1.0;
+        while (scoreBestMove != null && scoreBestMove > 0.5){
             scoreBestMove = stepOne();
         }
     }
@@ -76,11 +80,11 @@ public class HillClimbing {
      * @return set of possible moves
      */
     private Set<Move> calculatePossibleMoves(){
-        TreeSet<Move> moves = new TreeSet<>();
+        Set<Move> moves = new HashSet<>();
 
-        TreeSet<Edge> possibleEdges = calculatePossibleEdges();
+        Set<Edge> possibleEdges = calculatePossibleEdges();
         for (Edge e : possibleEdges) {
-            moves.add(new Move(e));
+            moves.add(new Move(network, realNetwork, e));
         }
 
 //        HashMap<Node, TreeSet<Edge>> edgesConnectedToChildren = separateEdgesByChildren(possibleEdges);
@@ -107,12 +111,12 @@ public class HillClimbing {
      * finds all the possible edges, without messing up the DAG property
      * @return set of edges
      */
-    private TreeSet<Edge> calculatePossibleEdges() {
-        TreeSet<Edge> possibleEdges = new TreeSet<>();
+    private Set<Edge> calculatePossibleEdges() {
+        Set<Edge> possibleEdges = new HashSet<>();
         for (Node parent : network.getNodes()){
             for (Node child : network.getNodes()){
-                if (parent != child && child.getParents().size() <= maxNumberOfParents && !network.violatesDAG(parent, child)){
-                    possibleEdges.add(new Edge(parent, child));
+                if (parent != child && child.getParents().size() <= maxNumberOfParents && !containsEdge(network.getEdges(), parent, child) && !network.violatesDAG(parent, child)){
+                    possibleEdges.add(new Edge(network, parent, child));
                 }
             }
         }

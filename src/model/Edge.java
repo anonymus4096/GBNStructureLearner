@@ -6,10 +6,16 @@ package model;
 public class Edge implements Comparable {
     private Node parent;
     private Node child;
+    private Network network;
 
-    public Edge(Node parent, Node child) {
+    public Edge(Network network, Node parent, Node child) {
         this.parent = parent;
         this.child = child;
+        this.network = network;
+    }
+
+    public Network getNetwork() {
+        return network;
     }
 
     public Node getParent() {

@@ -16,9 +16,9 @@ public class Node implements Comparable {
     private Network network;
 
 
-    public Node(String s, Network network1) {
+    public Node(String s, Network network) {
         name = s;
-        network = network1;
+        network = network;
         parents = new HashSet<>();
         children = new HashSet<>();
     }

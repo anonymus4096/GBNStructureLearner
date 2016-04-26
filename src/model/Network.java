@@ -2,8 +2,7 @@ package model;
 
 import java.util.*;
 
-import static utils.GraphFunctions.containsNodeWithName;
-import static utils.GraphFunctions.getNodeWithName;
+import static utils.GraphFunctions.*;
 import static utils.NameGenerator.generateRandomName;
 
 /**
@@ -68,9 +67,11 @@ public class Network {
         } else if (!containsNodeWithName(nodes, child.getName())) {
             throw new IllegalArgumentException("Child does not exist with the name " + child.getName() + " when trying to add new edges");
         }
-        edges.add(new Edge(parent, child));
-        parent.addNewChild(child);
-        child.addNewParent(parent);
+        if (!containsEdge(edges, parent, child)) {
+            edges.add(new Edge(this, parent, child));
+            parent.addNewChild(child);
+            child.addNewParent(parent);
+        }
     }
 
     public void addRandomEdge() {

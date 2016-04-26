@@ -1,5 +1,6 @@
 import model.Network;
 import model.Node;
+import search.HillClimbing;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -15,21 +16,44 @@ import static utils.GraphFunctions.getNodeWithName;
  * Created by Benedek on 3/17/2016.
  */
 public class BayesNetwork {
-    private static double lambda = 100;
+    private static double lambda = 1;
     public static Network network;
+    public static Network realNetwork;
     private static int numberOfVertices = 100;
     static String format = "%03d";
 
 
     public static void main(String[] args) {
         network = new Network();
-        //createRandomNetwork(10);
-        createRandomDAGNetwork(100);
+        realNetwork = new Network();
+        //createRandomNetwork(network, 10);
+        createRandomDAGNetwork(realNetwork, 10);
+        createEmptyNetwork(network, 10);
+        HillClimbing hillClimbing = new HillClimbing(network, realNetwork);
+        hillClimbing.climbHill();
         //importNetworkFromCSV("res/sample.0.data.csv");
+
+        realNetwork.printNetwork();
         network.printNetwork();
     }
 
-    private static void createRandomDAGNetwork(int numberOfNodes) {
+    //TODO create new network with the same nodes, but without any edges
+
+    private static void createEmptyNetwork(Network network, int numberOfNodes){
+        numberOfVertices = numberOfNodes;
+        format = "%0" + String.valueOf(numberOfVertices - 1).length() + "d";
+
+        if (lambda > ((double) numberOfVertices - 1) / 2) {
+            lambda = ((double) numberOfVertices - 1) / 2;
+        }
+
+        for (int i = 0; i < numberOfVertices; i++) {
+            String name = "GENE" + String.format(format, i);
+            network.addNode(new Node(name, network));
+        }
+    }
+
+    private static void createRandomDAGNetwork(Network network, int numberOfNodes) {
         numberOfVertices = numberOfNodes;
         format = "%0" + String.valueOf(numberOfVertices - 1).length() + "d";
 
@@ -63,7 +87,7 @@ public class BayesNetwork {
         }
     }
 
-    private static void createRandomNetwork(int numberOfNodes) {
+    private static void createRandomNetwork(Network network, int numberOfNodes) {
         numberOfVertices = numberOfNodes;
         if (lambda > ((double) numberOfVertices - 1) / 2) {
             lambda = ((double) numberOfVertices - 1) / 2;

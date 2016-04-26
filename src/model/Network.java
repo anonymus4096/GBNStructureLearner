@@ -155,7 +155,12 @@ public class Network {
     }
 
     private boolean hasPath(Node from, Node to) {
-        return from.getDescendants().contains(to);
+        for (Node n : from.getDescendants()){
+            if (Objects.equals(n.getName(), to.getName())){
+                return true;
+            }
+        }
+        return false;
     }
 
 }

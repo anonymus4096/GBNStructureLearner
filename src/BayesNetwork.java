@@ -16,7 +16,7 @@ import static utils.GraphFunctions.getNodeWithName;
  * Created by Benedek on 3/17/2016.
  */
 public class BayesNetwork {
-    private static double lambda = 1;
+    private static double lambda = 2;
     public static Network network;
     public static Network realNetwork;
     private static int numberOfVertices = 100;
@@ -27,8 +27,8 @@ public class BayesNetwork {
         network = new Network();
         realNetwork = new Network();
         //createRandomNetwork(network, 10);
-        createRandomDAGNetwork(realNetwork, 10);
-        createEmptyNetwork(network, 10);
+        createRandomDAGNetwork(realNetwork, 100);
+        createEmptyNetwork(network, 100);
         HillClimbing hillClimbing = new HillClimbing(network, realNetwork);
         hillClimbing.climbHill();
         //importNetworkFromCSV("res/sample.0.data.csv");

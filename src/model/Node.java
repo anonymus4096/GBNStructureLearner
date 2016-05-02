@@ -5,6 +5,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import static utils.GraphFunctions.containsNodeWithName;
+import static utils.GraphFunctions.getNodeWithName;
 
 /**
  * Created by Benedek on 3/17/2016.
@@ -53,8 +54,6 @@ public class Node implements Comparable {
             }
             if (anyNewNodes){
                 newDescendants = getAllDescendants(newDescendants);
-            } else {
-                break;
             }
         }
         return newDescendants;
@@ -73,8 +72,19 @@ public class Node implements Comparable {
         Node n = (Node) o;
         if (getName().compareTo(n.getName()) > 0) {
             return 1;
-        } else {
+        } else if (getName().compareTo(n.getName()) < 0) {
             return -1;
+        } else {
+            return 0;
         }
+    }
+
+
+    public void removeParent(Node parent) {
+        parents.remove(getNodeWithName(parents, parent.getName()));
+    }
+
+    public void removeChild(Node child) {
+        children.remove(getNodeWithName(children, child.getName()));
     }
 }

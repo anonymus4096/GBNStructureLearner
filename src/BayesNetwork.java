@@ -17,26 +17,33 @@ public class BayesNetwork {
     public static Network network;
     public static Network realNetwork;
     private static int numberOfVertices = 100;
-    static String format = "%03d";
+    private static String format = "%03d";
+
+    private static String dataFileName = "res/sample.0.data.csv";
+    private static String structureFileName = "res/sample.0.structure";
 
 
     public static void main(String[] args) {
         network = new Network();
         realNetwork = new Network();
         Network importedNetwork = new Network();
+
         //createRandomNetwork(network, 10);
-        //createRandomDAGNetwork(realNetwork, 10);
-        //createEmptyNetwork(network, 10);
+        createRandomDAGNetwork(realNetwork, 10);
+        createEmptyNetwork(network, 10);
         HillClimbing hillClimbing = new HillClimbing(network, realNetwork);
         hillClimbing.climbHill();
-        importNetworkFromCSV(importedNetwork, "res/sample.0.data.csv", "res/sample.0.structure");
 
-        //realNetwork.printNetwork();
-        //network.printNetwork();
-        importedNetwork.printNetwork();
+
+        //importEmptyNetworkFromCSV(network, dataFileName);
+        //importNetworkFromCSV(importedNetwork, dataFileName, structureFileName);
+        //HillClimbing hillClimbing = new HillClimbing(network, importedNetwork);
+        //hillClimbing.climbHill();
+
+        realNetwork.printNetwork();
+        //importedNetwork.printNetwork();
+        network.printNetwork();
     }
-
-    //TODO create new network with the same nodes, but without the edges
 
     private static void createEmptyNetwork(Network network, int numberOfNodes){
         numberOfVertices = numberOfNodes;

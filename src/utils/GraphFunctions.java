@@ -37,5 +37,12 @@ public class GraphFunctions {
         return false;
     }
 
-
+    public static Edge getEdge(Set<Edge> edges, Node parent, Node child) {
+        for (Edge e : edges) {
+            if (e.getChild() == child && e.getParent() == parent) {
+                return e;
+            }
+        }
+        return null;
+    }
 }

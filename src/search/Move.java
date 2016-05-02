@@ -13,43 +13,33 @@ import java.util.TreeSet;
  * Encapsulates one move that can be made in the process of building a DAG network (adding a set of edges)
  * The class is equipped to represent adding multiple edges, though we will only be using this with a single edge
  */
-public class Move {
-    private Set<Edge> edges;
-    private Node commonChild;
+public class Move implements Comparable {
+    private Edge edge = null;
     private Double score = null;
     private Network network;
     private Network realNetwork;
+    private boolean adding;
 
-    public Move(Network myNetwork, Network actualNetwork) {
-        edges = new TreeSet<>();
+    public Move(Network myNetwork, Network actualNetwork, boolean add) {
         network = myNetwork;
         realNetwork = actualNetwork;
+        this.adding = add;
     }
 
-    public Move(Network myNetwork, Network actualNetwork, Edge firstEdge) {
+    public Move(Network myNetwork, Network actualNetwork, Edge edge, boolean add) {
         network = myNetwork;
         realNetwork = actualNetwork;
-        edges = new TreeSet<Edge>();
-        edges.add(firstEdge);
-        commonChild = firstEdge.getChild();
+        this.edge = edge;
+        this.adding = add;
     }
 
     /**
-     * adding the edge to the set of edges
-     * throws IllegalArgumentException if the new edge has a different child than the others
+     * setter function for the edge field
      *
-     * @param newEdge the new edge to be added
+     * @param edge the desired edge
      */
-    public void addEdge(Edge newEdge) {
-        if (edges.size() == 0) {
-            edges.add(newEdge);
-        } else {
-            if (newEdge.getChild() != commonChild) {
-                throw new IllegalArgumentException("A move cannot have edges with different children.");
-            } else {
-                edges.add(newEdge);
-            }
-        }
+    public void setEdge(Edge edge) {
+        this.edge = edge;
     }
 
     /**
@@ -66,8 +56,8 @@ public class Move {
     private double getDummyScore() {
         double dummyScore = 0.0;
 
-        Node realChild = GraphFunctions.getNodeWithName(realNetwork.getNodes(), edges.iterator().next().getChild().getName());
-        Node newChild = GraphFunctions.getNodeWithName(network.getNodes(), edges.iterator().next().getChild().getName());
+        Node realChild = GraphFunctions.getNodeWithName(realNetwork.getNodes(), edge.getChild().getName());
+        Node newChild = GraphFunctions.getNodeWithName(network.getNodes(), edge.getChild().getName());
 
         Set<String> realParentNames = new TreeSet<>();
         if (realChild != null) {
@@ -79,7 +69,6 @@ public class Move {
         }
 
         Set<String> newParentNames = new TreeSet<>();
-        newParentNames.add(edges.iterator().next().getParent().getName());
         if (newChild != null) {
             for (Node n : newChild.getParents()) {
                 newParentNames.add(n.getName());
@@ -87,13 +76,17 @@ public class Move {
         } else {
             throw new IllegalArgumentException("The real network structure and the new network structure has different nodes.");
         }
+        if (adding) {
+            newParentNames.add(edge.getParent().getName());
+        } else {
+            newParentNames.remove(edge.getParent().getName());
+        }
 
         Set<String> intersectionOfParentNames = new TreeSet<>(realParentNames);
         intersectionOfParentNames.retainAll(newParentNames);
         if (intersectionOfParentNames.size() == 0) {
             dummyScore = 0;
-        }
-        else {
+        } else {
             dummyScore = intersectionOfParentNames.size() / (Math.sqrt(newParentNames.size()) * Math.sqrt(realParentNames.size()));
         }
 
@@ -101,12 +94,8 @@ public class Move {
         return dummyScore;
     }
 
-    public Set<Edge> getEdges() {
-        return edges;
-    }
-
-    public Node getCommonChild() {
-        return commonChild;
+    public Edge getEdge() {
+        return edge;
     }
 
     public double getScore() {
@@ -114,5 +103,38 @@ public class Move {
             score = calculateScore();
         }
         return score;
+    }
+
+    public boolean isAdding() {
+        return adding;
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        Move m = (Move) o;
+        Edge e = m.getEdge();
+        if (edge.compareTo(e) > 0) {
+            return 1;
+        } else if (edge.compareTo(e) < 0) {
+            return -1;
+        } else {
+            if (adding == m.isAdding()) {
+                return 0;
+            } else if (!adding && m.isAdding()) {
+                return -1;
+            } else {
+                return 1;
+            }
+        }
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this.getClass().equals(obj.getClass())) {
+            Move m = (Move) obj;
+            return edge.compareTo(m.edge) == 0;
+        } else {
+            return false;
+        }
     }
 }

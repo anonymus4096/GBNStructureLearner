@@ -39,11 +39,19 @@ public class Edge implements Comparable {
         } else if (parent.getName().compareTo(e.getParent().getName()) == 0){
             if (child.getName().compareTo(e.getChild().getName()) > 0){
                 return 1;
-            } else {
+            } else if (child.getName().compareTo(e.getChild().getName()) < 0) {
                 return -1;
+            } else {
+                return 0;
             }
         } else {
             return -1;
         }
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        Edge e = (Edge) obj;
+        return compareTo(e) == 0;
     }
 }

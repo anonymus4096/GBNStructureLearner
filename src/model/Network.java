@@ -90,6 +90,26 @@ public class Network {
         }
     }
 
+    public void deleteEdge(Node parent, Node child) {
+        deleteEdge(parent.getName(), child.getName());
+    }
+
+    public void deleteEdge(String parentName, String childName) {
+        if (!containsNodeWithName(nodes, parentName)) {
+            throw new IllegalArgumentException("Parent does not exist with the name " + parentName + " when trying to delete the edge.");
+        } else if (!containsNodeWithName(nodes, childName)) {
+            throw new IllegalArgumentException("Child does not exist with the name " + childName + " when trying to delete the edge.");
+        }
+
+        Node parent = getNodeWithName(getNodes(), parentName);
+        Node child = getNodeWithName(getNodes(), childName);
+        if (containsEdge(edges, parent, child)) {
+            edges.remove(getEdge(getEdges(), parent, child));
+            parent.removeChild(child);
+            child.removeParent(parent);
+        }
+    }
+
     public void addRandomEdge() {
         Node parent, child;
         parent = getRandomNode();

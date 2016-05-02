@@ -74,6 +74,22 @@ public class Network {
         }
     }
 
+    public void addNewEdge(String parentName, String childName) {
+        if (!containsNodeWithName(nodes, parentName)) {
+            throw new IllegalArgumentException("Parent does not exist with the name " + parentName + " when trying to add new edges");
+        } else if (!containsNodeWithName(nodes, childName)) {
+            throw new IllegalArgumentException("Child does not exist with the name " + childName + " when trying to add new edges");
+        }
+
+        Node parent = getNodeWithName(getNodes(), parentName);
+        Node child = getNodeWithName(getNodes(), childName);
+        if (!containsEdge(edges, parent, child)) {
+            edges.add(new Edge(this, parent, child));
+            parent.addNewChild(child);
+            child.addNewParent(parent);
+        }
+    }
+
     public void addRandomEdge() {
         Node parent, child;
         parent = getRandomNode();
@@ -139,8 +155,6 @@ public class Network {
         } else {
             return false;
         }
-
-
     }
 
 

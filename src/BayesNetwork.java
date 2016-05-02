@@ -4,10 +4,7 @@ import search.HillClimbing;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Random;
-import java.util.Scanner;
+import java.util.*;
 
 import static utils.GraphFunctions.containsEdge;
 import static utils.GraphFunctions.getNodeWithName;
@@ -26,18 +23,20 @@ public class BayesNetwork {
     public static void main(String[] args) {
         network = new Network();
         realNetwork = new Network();
+        Network importedNetwork = new Network();
         //createRandomNetwork(network, 10);
-        createRandomDAGNetwork(realNetwork, 100);
-        createEmptyNetwork(network, 100);
+        //createRandomDAGNetwork(realNetwork, 10);
+        //createEmptyNetwork(network, 10);
         HillClimbing hillClimbing = new HillClimbing(network, realNetwork);
         hillClimbing.climbHill();
-        //importNetworkFromCSV("res/sample.0.data.csv");
+        importNetworkFromCSV(importedNetwork, "res/sample.0.data.csv", "res/sample.0.structure");
 
-        realNetwork.printNetwork();
-        network.printNetwork();
+        //realNetwork.printNetwork();
+        //network.printNetwork();
+        importedNetwork.printNetwork();
     }
 
-    //TODO create new network with the same nodes, but without any edges
+    //TODO create new network with the same nodes, but without the edges
 
     private static void createEmptyNetwork(Network network, int numberOfNodes){
         numberOfVertices = numberOfNodes;
@@ -103,7 +102,7 @@ public class BayesNetwork {
 
     }
 
-    private static void importNetworkFromCSV(String fileName) {
+    private static void importEmptyNetworkFromCSV(Network network, String fileName) {
         try {
             Scanner scanner = new Scanner(new File(fileName));
             scanner.useDelimiter(",");
@@ -112,6 +111,25 @@ public class BayesNetwork {
             numberOfVertices = headers.size();
             for (int i = 0; i < numberOfVertices; i++) {
                 network.addNode(new Node(headers.get(i), network));
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void importNetworkFromCSV(Network network, String nodesFileName, String edgesFileName) {
+        importEmptyNetworkFromCSV(network, nodesFileName);
+
+        try {
+            Scanner scanner = new Scanner(new File(edgesFileName));
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                if (!Objects.equals(line.trim(), "")) {
+                    ArrayList<String> elements = new ArrayList<String>(Arrays.asList(line.split("\t")));
+                    if (elements.size() > 1 && Objects.equals(elements.get(2), "child")) {
+                        network.addNewEdge(elements.get(0), elements.get(1));
+                    }
+                }
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();

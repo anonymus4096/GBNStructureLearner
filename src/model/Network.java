@@ -197,4 +197,7 @@ public class Network {
         return false;
     }
 
+    public int size() {
+        return getNodes().size();
+    }
 }

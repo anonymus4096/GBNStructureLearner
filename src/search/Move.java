@@ -19,6 +19,7 @@ public class Move implements Comparable {
     private Network network;
     private Network realNetwork;
     private boolean adding;
+    private String dataFileName = "res/sample.0.data.csv";
 
     public Move(Network myNetwork, Network actualNetwork, boolean add) {
         network = myNetwork;
@@ -48,6 +49,10 @@ public class Move implements Comparable {
      * @return score of the move
      */
     public double calculateScore() {
+        //TODO just for debugging purposes
+        BayesianScoring bayesianScoring = new BayesianScoring(this, network, dataFileName);
+        
+        
         double calculatedScore = getDummyScore();
         score = calculatedScore;
         return calculatedScore;

@@ -20,6 +20,7 @@ public class HillClimbing {
     private int maxNumberOfParents = 5;
     private LinkedList<Move> lastMoves;
     private int maxSize = 15;
+    private BayesianScoring bayesianScoring;
 
     /**
      * constructor
@@ -29,6 +30,7 @@ public class HillClimbing {
     public HillClimbing(Network network, Network realNetwork) {
         this.network = network;
         this.realNetwork = realNetwork;
+        bayesianScoring = BayesianScoring.getInstance();
     }
 
     /**

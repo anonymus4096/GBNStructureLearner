@@ -18,7 +18,7 @@ import java.util.*;
 public class BayesianScoring {
     private Move move;
     private Network network;
-    String fileName = "res/sample.0.data.csv";
+    private String fileName = "res/sample.0.data.csv";
     private Double v, alpha;
     private int n;
     private DoubleMatrix mean;
@@ -30,20 +30,31 @@ public class BayesianScoring {
     private DoubleMatrix betaStar;
     private DoubleMatrix mu;
 
-    public BayesianScoring(Move m, Network n, String fileName) {
-        move = m;
-        network = n;
-        this.fileName = fileName;
+    private static BayesianScoring ourInstance = new BayesianScoring();
+
+    public static BayesianScoring getInstance() {
+        if (ourInstance == null) {
+            ourInstance = new BayesianScoring();
+        }
+        return ourInstance;
+    }
+
+    private BayesianScoring() {
         initializeValues();
+    }
+
+    public void setNetwork(Network network) {
+        this.network = network;
+    }
+
+    public void setMove(Move move) {
+        this.move = move;
     }
 
     private void initializeValues() {
         mean = getMeansOfData(fileName);
         variance = getVarianceOfData(fileName);
-        n = network.getNodes().size();
         mu = DoubleMatrix.zeros(n, 1);
-        calculateBeta();
-        calculateBetaStar();
     }
 
     private DoubleMatrix getVarianceOfData(String fileName) {
@@ -52,14 +63,14 @@ public class BayesianScoring {
             Scanner scanner = new Scanner(new File(fileName));
             scanner.useDelimiter(",");
             String headerLine = scanner.nextLine();
-            int numberOfColumns = headerLine.split(",").length;
-            sumOfVariances = new DoubleMatrix(numberOfColumns, numberOfColumns);
+            n = headerLine.split(",").length;
+            sumOfVariances = new DoubleMatrix(n, n);
             String[] stringValues;
             double[] realValues;
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
                 stringValues = line.split(",");
-                realValues = new double[numberOfColumns];
+                realValues = new double[n];
                 int columnIndex = 0;
                 for (String s : stringValues) {
                     realValues[columnIndex] = Double.valueOf(stringValues[columnIndex]);
@@ -134,13 +145,17 @@ public class BayesianScoring {
     }
 
     private Double empiricalProbability(Set<Node> nodes) {
-        // TODO if nodes.size() == 0
+        if (nodes.size() == 0) {
+            return 1.0;
+        }
         int lw = nodes.size();
-        Double alphaw = alpha - n + lw;
-        int M = dataLength;
 
         DoubleMatrix betaW = getBetaW(nodes);
         DoubleMatrix betaStarW = getBetaStarW(betaW);
+        //TODO alphaW biztosan lehet negatív?
+        Double alphaw = alpha - n + lw;
+        int M = dataLength;
+
         double ans = Math.pow((1 / (2 * Math.PI)), M * lw / 2) *
                 Math.pow((v / (v + M)), lw / 2) *
                 (c(lw, alphaw) / c(lw, alphaw + M)) *
@@ -216,7 +231,7 @@ public class BayesianScoring {
         int newIndexCol = 0;
         for (Integer col : indexes) {
             for (int row = 0; row < temp.rows; row++) {
-                subMatrix.put(row, newIndexCol, matrix.get(row, col));
+                subMatrix.put(row, newIndexCol, temp.get(row, col));
             }
             newIndexCol++;
         }

@@ -244,7 +244,7 @@ public class BayesianScoring {
         for (int i = 1; i <= nPar; i++) {
             product *= Gamma.gamma((alphaPar + 1 - i) / 2);
         }
-        return Math.pow(2, alphaPar * nPar / 2) * Math.pow(Math.PI, nPar * (nPar - 1) / 4) * product;
+        return 1 / (Math.pow(2, alphaPar * nPar / 2) * Math.pow(Math.PI, nPar * (nPar - 1) / 4) * product);
     }
 
     public DoubleMatrix getBeta() {

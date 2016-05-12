@@ -9,6 +9,8 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="jscience" level="project" />
     <orderEntry type="library" name="jblas-1.2.4" level="project" />
+    <orderEntry type="library" name="commons-math3-3.0" level="project" />
+    <orderEntry type="library" name="commons-math3-3.6.1" level="project" />
   </component>
   <component name="org.twodividedbyzero.idea.findbugs">
     <option name="_basePreferences">

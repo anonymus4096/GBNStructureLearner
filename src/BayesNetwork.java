@@ -29,16 +29,16 @@ public class BayesNetwork {
         Network importedNetwork = new Network();
 
         //createRandomNetwork(network, 10);
-        createRandomDAGNetwork(realNetwork, 10);
-        createEmptyNetwork(network, 10);
-        HillClimbing hillClimbing = new HillClimbing(network, realNetwork);
-        hillClimbing.climbHill();
-
-
-        //importEmptyNetworkFromCSV(network, dataFileName);
-        //importNetworkFromCSV(importedNetwork, dataFileName, structureFileName);
-        //HillClimbing hillClimbing = new HillClimbing(network, importedNetwork);
+        //createRandomDAGNetwork(realNetwork, 10);
+        //createEmptyNetwork(network, 10);
+        //HillClimbing hillClimbing = new HillClimbing(network, realNetwork);
         //hillClimbing.climbHill();
+
+
+        importEmptyNetworkFromCSV(network, dataFileName);
+        importNetworkFromCSV(importedNetwork, dataFileName, structureFileName);
+        HillClimbing hillClimbing = new HillClimbing(network, importedNetwork);
+        hillClimbing.climbHill();
 
         realNetwork.printNetwork();
         //importedNetwork.printNetwork();

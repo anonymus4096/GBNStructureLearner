@@ -51,9 +51,9 @@ public class Move implements Comparable {
     public double calculateScore() {
         //TODO just for debugging purposes
         BayesianScoring bayesianScoring = new BayesianScoring(this, network, dataFileName);
-        
-        
-        double calculatedScore = getDummyScore();
+
+
+        double calculatedScore = bayesianScoring.calculateScoreOfMove();
         score = calculatedScore;
         return calculatedScore;
     }

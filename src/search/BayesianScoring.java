@@ -134,6 +134,7 @@ public class BayesianScoring {
     }
 
     private Double empiricalProbability(Set<Node> nodes) {
+        // TODO if nodes.size() == 0
         int lw = nodes.size();
         Double alphaw = alpha - n + lw;
         int M = dataLength;

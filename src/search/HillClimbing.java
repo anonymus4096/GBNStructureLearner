@@ -19,7 +19,7 @@ public class HillClimbing {
     private Set<Move> possibleMoves;
     private int maxNumberOfParents = 5;
     private LinkedList<Move> lastMoves;
-    private int maxSize = 15;
+    private int maxSize = 5;
     private BayesianScoring bayesianScoring;
 
     /**
@@ -43,7 +43,7 @@ public class HillClimbing {
         lastMoves = new LinkedList<>();
 
         int numberOfSteps = 0;
-        while (scoreBestMove != null && scoreBestMove > 0.5 && numberOfSteps < 1000) {
+        while (scoreBestMove != null && /*scoreBestMove > 0.5 &&*/ numberOfSteps < 100) {
             scoreBestMove = stepOne();
             numberOfSteps++;
         }
@@ -87,9 +87,9 @@ public class HillClimbing {
         boolean before = network.isDAG();
         makeMove(bestMove);
         if (bestMove.isAdding()) {
-            System.out.println("Added edge: " + bestMove.getEdge().getParent().getName() + " --> " + bestMove.getEdge().getChild().getName());
+            System.out.println("Added edge: " + bestMove.getEdge().getParent().getName() + " --> " + bestMove.getEdge().getChild().getName() + " : \t" + bestMove.getScore());
         } else {
-            System.out.println("Deleting edge: " + bestMove.getEdge().getParent().getName() + " --> " + bestMove.getEdge().getChild().getName());
+            System.out.println("Deleting edge: " + bestMove.getEdge().getParent().getName() + " --> " + bestMove.getEdge().getChild().getName() + " : \t" + bestMove.getScore());
         }
         boolean after = network.isDAG();
 

@@ -120,47 +120,69 @@ public class BayesianScoring {
     }
 
     public Double calculateScoreOfMove() {
-        Double score = 0.0;
+        Double score;
         Node parent = move.getEdge().getParent();
         Node child = move.getEdge().getChild();
 
-        Double scoreBefore = calculateScore();
-        network.addNewEdge(parent, child);
-        Double scoreAfter = calculateScore();
-        network.deleteEdge(parent, child);
 
-        score = scoreAfter / scoreBefore;
+        Double scoreBefore, scoreAfter;
+        if (move.isAdding()) {
+            scoreBefore = calculateScore();
+            network.addNewEdge(parent, child);
+            scoreAfter = calculateScore();
+            network.deleteEdge(parent, child);
+        } else {
+            scoreBefore = calculateScore();
+            network.deleteEdge(parent, child);
+            scoreAfter = calculateScore();
+            network.addNewEdge(parent, child);
+        }
+
+        // it has to be substraction because we calculate the logarithms of the scores
+        score = scoreAfter - scoreBefore;
         return score;
     }
 
     private Double calculateScore() {
-        Set<Node> parents = move.getEdge().getChild().getParents();
+        Set<Node> parents = new HashSet<>(move.getEdge().getChild().getParents());
         Node child = move.getEdge().getChild();
 
         Double denominator = empiricalProbability(parents);
         parents.add(child);
         Double numerator = empiricalProbability(parents);
 
-        return numerator / denominator;
+        return numerator - denominator;
     }
 
     private Double empiricalProbability(Set<Node> nodes) {
         if (nodes.size() == 0) {
-            return 1.0;
+            return 0.0;
         }
         int lw = nodes.size();
 
         DoubleMatrix betaW = getBetaW(nodes);
         DoubleMatrix betaStarW = getBetaStarW(betaW);
-        //TODO alphaW biztosan lehet negatív?
         Double alphaw = alpha - n + lw;
         int M = dataLength;
 
-        double ans = Math.pow((1 / (2 * Math.PI)), M * lw / 2) *
+        /*double ans = Math.pow((1 / (2 * Math.PI)), M * lw / 2) *
                 Math.pow((v / (v + M)), lw / 2) *
                 (c(lw, alphaw) / c(lw, alphaw + M)) *
-                (Math.pow(getDeterminant(betaW), alphaw / 2) / Math.pow(getDeterminant(betaStarW), (alphaw + M) / 2));
+                (Math.pow(getDeterminant(betaW), alphaw / 2) / Math.pow(getDeterminant(betaStarW), (alphaw + M) / 2));*/
+        double ans = (M * lw / 2) * Math.log(1 / (2 * Math.PI)) +
+                (lw / 2) * Math.log(v / (v + M)) +
+                (logc(lw, alphaw) - logc(lw, alphaw + M)) +
+                ((alphaw / 2) * Math.log(getDeterminant(betaW)) - ((alphaw + M) / 2) * Math.log(getDeterminant(betaStarW)));
+
         return ans;
+    }
+
+    private double logc(int nPar, Double alphaPar) {
+        double sum = 0;
+        for (int i = 1; i <= nPar; i++) {
+            sum += Gamma.logGamma((alphaPar + 1 - i) / 2);
+        }
+        return -1 * ((alphaPar * nPar / 2) * Math.log(2) + (n * (n - 1) / 4) * Math.log(Math.PI) + sum);
     }
 
     public DoubleMatrix getBetaStarW(DoubleMatrix betaW) {
@@ -264,8 +286,8 @@ public class BayesianScoring {
     private DoubleMatrix calculateBeta() {
         DoubleMatrix T = DoubleMatrix.eye(network.size());
 
-        v = 4.0;
-        alpha = v - 1;
+        v = (double) (n + 1);
+        alpha = (double) n;
 
         beta = T.mul(v * (alpha - n + 1) / (v + 1));
         return beta;

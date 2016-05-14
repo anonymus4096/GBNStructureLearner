@@ -38,15 +38,15 @@ public class HillClimbing {
      * or when there is no more edge to be set
      */
     public void climbHill() {
-        Double scoreBestMove = 1.0;
+        Double scoreBestMove = 0.0;
 
         lastMoves = new LinkedList<>();
 
         int numberOfSteps = 0;
-        while (scoreBestMove != null && /*scoreBestMove > 0.5 &&*/ numberOfSteps < 100) {
+        do {
             scoreBestMove = stepOne();
             numberOfSteps++;
-        }
+        } while (scoreBestMove != null && scoreBestMove > 0 && numberOfSteps < 1000);
     }
 
     /**

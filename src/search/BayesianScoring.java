@@ -3,9 +3,8 @@ package search;
 import model.Network;
 import model.Node;
 import org.apache.commons.math3.special.Gamma;
-import org.jblas.ComplexDoubleMatrix;
+import org.jblas.Decompose;
 import org.jblas.DoubleMatrix;
-import org.jblas.Eigen;
 import org.jblas.Solve;
 
 import java.io.File;
@@ -196,14 +195,51 @@ public class BayesianScoring {
         if (matrix.rows != matrix.columns) {
             throw new IllegalArgumentException("The matrix is not a square matrix.");
         }
+        Decompose.LUDecomposition<DoubleMatrix> LUDecomposition = Decompose.lu(matrix);
 
-        ComplexDoubleMatrix eigenvalues = Eigen.eigenvalues(matrix);
-        double determinant = 1;
-        for (int i = 0; i < eigenvalues.getLength(); i++) {
-            determinant *= eigenvalues.getReal(i);
+        Double determinant = 1.0;
+        for (int i = 0; i < LUDecomposition.l.columns; i++) {
+            determinant *= LUDecomposition.l.get(i, i);
+            determinant *= LUDecomposition.u.get(i, i);
         }
+        determinant *= getSignOfPermutation(LUDecomposition.p);
+
         return determinant;
     }
+
+    private Integer getSignOfPermutation(DoubleMatrix p) {
+        List<Integer> inversions = new ArrayList<>(Collections.nCopies(p.rows, 0));
+
+        List<Integer> permutation = new ArrayList<>(Collections.nCopies(p.rows, 0));
+        for (int i = 0; i < p.rows; i++) {
+            for (int j = 0; j < p.columns; j++) {
+                if (p.get(i, j) > 0) {
+                    permutation.set(i, j);
+                    break;
+                }
+            }
+        }
+
+        for (int i = 0; i < permutation.size(); i++) {
+            int numberOfInversions = 0;
+            for (int j = i + 1; j < permutation.size(); j++) {
+                if (permutation.get(i) > permutation.get(j)) {
+                    numberOfInversions++;
+                }
+            }
+            inversions.set(i, numberOfInversions);
+        }
+
+        int sum = 0;
+        for (Integer i : inversions) {
+            if (i > 0) {
+                sum += i;
+            }
+        }
+
+        return sum % 2 == 0 ? 1 : -1;
+    }
+
 
     private DoubleMatrix getBetaW(Set<Node> nodes) {
         DoubleMatrix inverseBeta = Solve.pinv(getBeta());

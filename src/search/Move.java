@@ -49,7 +49,6 @@ public class Move implements Comparable {
      * @return score of the move
      */
     public double calculateScore() {
-        //TODO just for debugging purposes
         BayesianScoring bayesianScoring = BayesianScoring.getInstance();
         bayesianScoring.setMove(this);
         bayesianScoring.setNetwork(network);

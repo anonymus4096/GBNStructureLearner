@@ -40,8 +40,8 @@ public class BayesNetwork {
         HillClimbing hillClimbing = new HillClimbing(network, importedNetwork);
         hillClimbing.climbHill();
 
-        realNetwork.printNetwork();
-        //importedNetwork.printNetwork();
+        //realNetwork.printNetwork();
+        importedNetwork.printNetwork();
         network.printNetwork();
     }
 

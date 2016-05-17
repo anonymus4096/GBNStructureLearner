@@ -21,6 +21,7 @@ public class HillClimbing {
     private LinkedList<Move> lastMoves;
     private int maxSize = 5;
     private BayesianScoring bayesianScoring;
+    private int maxNumberOfSteps = 10;
 
     /**
      * constructor
@@ -38,6 +39,7 @@ public class HillClimbing {
      * or when there is no more edge to be set
      */
     public void climbHill() {
+        long startTime = System.nanoTime();
         Double scoreBestMove = 0.0;
 
         lastMoves = new LinkedList<>();
@@ -46,7 +48,10 @@ public class HillClimbing {
         do {
             scoreBestMove = stepOne();
             numberOfSteps++;
-        } while (scoreBestMove != null && scoreBestMove > 0 && numberOfSteps < 1000);
+        } while (scoreBestMove != null && scoreBestMove > 0 && numberOfSteps < maxNumberOfSteps);
+
+        long elapsedTime = System.nanoTime() - startTime;
+        System.out.println("The algorithm took " + elapsedTime / 1000000000.0 + " seconds to finish, while making " + numberOfSteps + " steps.");
     }
 
     /**
@@ -56,6 +61,7 @@ public class HillClimbing {
      */
     public Double stepOne() {
         possibleMoves = calculatePossibleMoves();
+        System.out.println("Number of possible moves to make: " + possibleMoves.size());
         if (possibleMoves.size() == 0) {
             return null;
         }
@@ -84,26 +90,14 @@ public class HillClimbing {
         // then append the last move to the end of the queue
         lastMoves.add(bestMove);
 
-        boolean before = network.isDAG();
         makeMove(bestMove);
         if (bestMove.isAdding()) {
             System.out.println("Added edge: " + bestMove.getEdge().getParent().getName() + " --> " + bestMove.getEdge().getChild().getName() + " : \t" + bestMove.getScore());
         } else {
             System.out.println("Deleting edge: " + bestMove.getEdge().getParent().getName() + " --> " + bestMove.getEdge().getChild().getName() + " : \t" + bestMove.getScore());
         }
-        boolean after = network.isDAG();
 
-
-        if (before != after) {
-            if (before) {
-                System.out.println("Last move messed up the DAG property.");
-            } else {
-                System.out.println("Last move restored DAG property.");
-            }
-        }
-
-
-        return bestMove != null ? bestMove.getScore() : null;
+        return bestMove.getScore();
     }
 
 

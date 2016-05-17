@@ -1,8 +1,8 @@
 package model;
 
-import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.regex.Pattern;
 
 import static utils.GraphFunctions.containsNodeWithName;
 import static utils.GraphFunctions.getNodeWithName;
@@ -20,8 +20,8 @@ public class Node implements Comparable {
     public Node(String s, Network network) {
         name = s;
         network = network;
-        parents = new HashSet<>();
-        children = new HashSet<>();
+        parents = new TreeSet<>();
+        children = new TreeSet<>();
     }
 
     public String getName() {
@@ -70,12 +70,38 @@ public class Node implements Comparable {
     @Override
     public int compareTo(Object o) {
         Node n = (Node) o;
-        if (getName().compareTo(n.getName()) > 0) {
-            return 1;
-        } else if (getName().compareTo(n.getName()) < 0) {
-            return -1;
+        int ID = 0, otherID = 0;
+        boolean isGene = true;
+
+        if (Pattern.matches("(G|g)(E|e)(N|n)(E|e)[0-9]+", name)) {
+            ID = Integer.parseInt(name.substring(4));
         } else {
-            return 0;
+            isGene = false;
+        }
+
+        if (Pattern.matches("(G|g)(E|e)(N|n)(E|e)[0-9]+", n.getName())) {
+            otherID = Integer.parseInt(n.getName().substring(4));
+        } else {
+            isGene = false;
+        }
+
+
+        if (isGene) {
+            if (ID > otherID) {
+                return 1;
+            } else if (ID < otherID) {
+                return -1;
+            } else {
+                return 0;
+            }
+        } else {
+            if (getName().compareTo(n.getName()) > 0) {
+                return 1;
+            } else if (getName().compareTo(n.getName()) < 0) {
+                return -1;
+            } else {
+                return 0;
+            }
         }
     }
 

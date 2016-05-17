@@ -1,6 +1,6 @@
+import evaluation.Evaluation;
 import model.Network;
 import model.Node;
-import search.HillClimbing;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -26,23 +26,23 @@ public class BayesNetwork {
     public static void main(String[] args) {
         network = new Network();
         realNetwork = new Network();
-        Network importedNetwork = new Network();
 
-        //createRandomNetwork(network, 10);
-        //createRandomDAGNetwork(realNetwork, 10);
-        //createEmptyNetwork(network, 10);
+        //importEmptyNetworkFromCSV(network, dataFileName);
+        //importNetworkFromCSV(realNetwork, dataFileName, structureFileName);
         //HillClimbing hillClimbing = new HillClimbing(network, realNetwork);
         //hillClimbing.climbHill();
 
+        network = new Network("myNetwork.txt");
+        realNetwork = new Network("realNetwork.txt");
+        Evaluation evaluation = new Evaluation(realNetwork, network);
+        evaluation.evaluate();
 
-        importEmptyNetworkFromCSV(network, dataFileName);
-        importNetworkFromCSV(importedNetwork, dataFileName, structureFileName);
-        HillClimbing hillClimbing = new HillClimbing(network, importedNetwork);
-        hillClimbing.climbHill();
-
+        //realNetwork.saveNetworkToFile("realNetwork.txt");
+        //network.saveNetworkToFile("myNetwork.txt");
         //realNetwork.printNetwork();
-        importedNetwork.printNetwork();
+        realNetwork.printNetwork();
         network.printNetwork();
+
     }
 
     private static void createEmptyNetwork(Network network, int numberOfNodes){
@@ -134,7 +134,7 @@ public class BayesNetwork {
                 if (!Objects.equals(line.trim(), "")) {
                     ArrayList<String> elements = new ArrayList<String>(Arrays.asList(line.split("\t")));
                     if (elements.size() > 1 && Objects.equals(elements.get(2), "child")) {
-                        network.addNewEdge(elements.get(0), elements.get(1));
+                        network.addNewEdge(elements.get(0), elements.get(1), Double.valueOf(elements.get(3)));
                     }
                 }
             }

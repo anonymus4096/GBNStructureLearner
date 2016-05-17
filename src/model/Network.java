@@ -1,5 +1,12 @@
 package model;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 
 import static utils.GraphFunctions.*;
@@ -19,7 +26,13 @@ public class Network {
 
     public Network(Set<Node> nodes) {
         this.nodes = nodes;
-        this.edges = new HashSet<>();
+        this.edges = new TreeSet<>();
+    }
+
+    public Network(String fileName) {
+        nodes = new TreeSet<>();
+        edges = new TreeSet<>();
+        loadNetworkFromFile(fileName);
     }
 
     public Set<Node> getNodes() {
@@ -90,6 +103,22 @@ public class Network {
         }
     }
 
+    public void addNewEdge(String parentName, String childName, Double strength) {
+        if (!containsNodeWithName(nodes, parentName)) {
+            throw new IllegalArgumentException("Parent does not exist with the name " + parentName + " when trying to add new edges");
+        } else if (!containsNodeWithName(nodes, childName)) {
+            throw new IllegalArgumentException("Child does not exist with the name " + childName + " when trying to add new edges");
+        }
+
+        Node parent = getNodeWithName(getNodes(), parentName);
+        Node child = getNodeWithName(getNodes(), childName);
+        if (!containsEdge(edges, parent, child)) {
+            edges.add(new Edge(this, parent, child, strength));
+            parent.addNewChild(child);
+            child.addNewParent(parent);
+        }
+    }
+
     public void deleteEdge(Node parent, Node child) {
         deleteEdge(parent.getName(), child.getName());
     }
@@ -139,11 +168,11 @@ public class Network {
 
     public boolean isDAG() {
         // set that contains all the vertices at first
-        Set<String> start = new HashSet<>(this.getNames());
+        Set<String> start = new TreeSet<>(this.getNames());
         // will contain one of the topological orders if exists such a thing
         List<Node> result = new ArrayList<>();
         // the next potential nodes to be considered
-        Set<Node> next = new HashSet<>();
+        Set<Node> next = new TreeSet<>();
 
         // move the root vertices from the start set to the next set
         Iterator<String> iter = start.iterator();
@@ -165,7 +194,7 @@ public class Network {
             for (Node n : potentialNext) {
                 if (!next.contains(n) && result.containsAll(n.getParents())) {
                     next.add(n);
-                    start.remove(n);
+                    start.remove(n.getName());
                 }
             }
         }
@@ -177,11 +206,51 @@ public class Network {
         }
     }
 
+    public void saveNetworkToFile(String fileName) {
+        List<String> lines = new ArrayList<>();
+        lines.add(String.valueOf(nodes.size()));
+        for (Node n : nodes) {
+            lines.add(n.getName());
+        }
+        for (Edge e : edges) {
+            String line = e.toString();
+            lines.add(line);
+        }
+        Path file = Paths.get(fileName);
+        try {
+            Files.write(file, lines, Charset.forName("UTF-8"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void loadNetworkFromFile(String fileName) {
+        Scanner scanner;
+        String line;
+        int numberOfNodes = 0;
+        try {
+            scanner = new Scanner(new File(fileName));
+            numberOfNodes = scanner.nextInt();
+            scanner.nextLine();
+            for (int i = 0; i < numberOfNodes; i++) {
+                addNode(new Node(scanner.nextLine(), this));
+            }
+            while (scanner.hasNextLine()) {
+                line = scanner.nextLine();
+                String[] elements = line.split("\t");
+                addNewEdge(elements[0], elements[1], Double.parseDouble(elements[2]));
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     /**
      * determines whether adding the edge with the given parameters would mess up the DAG property
+     *
      * @param parent start of the edge
-     * @param child end of the edge
+     * @param child  end of the edge
      * @return return true if it violates the DAG condition
      */
     public boolean violatesDAG(Node parent, Node child) {
@@ -189,8 +258,8 @@ public class Network {
     }
 
     private boolean hasPath(Node from, Node to) {
-        for (Node n : from.getDescendants()){
-            if (Objects.equals(n.getName(), to.getName())){
+        for (Node n : from.getDescendants()) {
+            if (Objects.equals(n.getName(), to.getName())) {
                 return true;
             }
         }

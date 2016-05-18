@@ -21,7 +21,7 @@ public class HillClimbing {
     private LinkedList<Move> lastMoves;
     private int maxSize = 5;
     private BayesianScoring bayesianScoring;
-    private int maxNumberOfSteps = 10;
+    private int maxNumberOfSteps = 1000;
 
     /**
      * constructor
@@ -142,7 +142,7 @@ public class HillClimbing {
         Set<Edge> possibleEdges = new HashSet<>();
         for (Node parent : network.getNodes()) {
             for (Node child : network.getNodes()) {
-                if (parent != child && child.getParents().size() <= maxNumberOfParents &&
+                if (parent != child && child.getParents().size() < maxNumberOfParents &&
                         !containsEdge(network.getEdges(), parent, child) && !network.violatesDAG(parent, child)) {
                     possibleEdges.add(new Edge(network, parent, child));
                 }

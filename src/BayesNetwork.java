@@ -1,6 +1,7 @@
 import evaluation.Evaluation;
 import model.Network;
 import model.Node;
+import search.HillClimbing;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -19,30 +20,28 @@ public class BayesNetwork {
     private static int numberOfVertices = 100;
     private static String format = "%03d";
 
-    private static String dataFileName = "res/sample.0.data.csv";
-    private static String structureFileName = "res/sample.0.structure";
+    private static String dataFileName = "res/sample.0.small.data.csv";
+    private static String structureFileName = "res/sample.0.small.structure";
 
 
     public static void main(String[] args) {
         network = new Network();
         realNetwork = new Network();
 
-        //importEmptyNetworkFromCSV(network, dataFileName);
-        //importNetworkFromCSV(realNetwork, dataFileName, structureFileName);
-        //HillClimbing hillClimbing = new HillClimbing(network, realNetwork);
-        //hillClimbing.climbHill();
+        importEmptyNetworkFromCSV(network, dataFileName);
+        importNetworkFromCSV(realNetwork, dataFileName, structureFileName);
+        HillClimbing hillClimbing = new HillClimbing(network, realNetwork);
+        hillClimbing.climbHill();
 
-        network = new Network("myNetwork.txt");
-        realNetwork = new Network("realNetwork.txt");
+        //network = new Network("myNetwork.txt");
+        //realNetwork = new Network("realNetwork.txt");
         Evaluation evaluation = new Evaluation(realNetwork, network);
         evaluation.evaluate();
 
-        //realNetwork.saveNetworkToFile("realNetwork.txt");
-        //network.saveNetworkToFile("myNetwork.txt");
-        //realNetwork.printNetwork();
+        realNetwork.saveNetworkToFile("realNetwork.txt");
+        network.saveNetworkToFile("myNetwork.txt");
         realNetwork.printNetwork();
         network.printNetwork();
-
     }
 
     private static void createEmptyNetwork(Network network, int numberOfNodes){

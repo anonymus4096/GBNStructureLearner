@@ -1,0 +1,47 @@
+Gene0	Gene1	child	0.161356	
+Gene0	Gene2	child	0.177809	
+Gene0	Gene3	child	0.192458	
+Gene0	Gene6	child	1.58745	
+Gene0	Gene7	child	0.775616	
+Gene0	Gene9	child	1.1652	
+Gene0	Gene12	child	0.685741	
+Gene0	Gene16	child	0.722853	
+
+Gene1	Gene5	child	-0.349853	
+Gene1	Gene19	child	-0.131273	
+
+Gene2	Gene3	child	0.853477	
+Gene2	Gene4	child	0.205511	
+Gene2	Gene8	child	0.323232	
+Gene2	Gene13	child	0.196227	
+
+Gene3	Gene7	child	-0.656181	
+Gene3	Gene8	child	-0.0820464	
+Gene3	Gene13	child	-0.381521	
+Gene3	Gene14	child	-0.323032	
+Gene3	Gene15	child	-0.266081	
+Gene3	Gene19	child	-0.244642	
+
+Gene4	Gene5	child	-0.215691	
+Gene4	Gene7	child	-0.338622	
+Gene4	Gene11	child	-0.227338	
+Gene4	Gene18	child	-0.128092	
+
+Gene5	Gene7	child	0.705984	
+
+Gene6	Gene8	child	0.702017	
+
+Gene7	Gene12	child	0.528587	
+Gene7	Gene16	child	0.207803	
+
+Gene9	Gene10	child	0.697798	
+Gene9	Gene13	child	0.140381	
+Gene9	Gene14	child	0.414162	
+Gene9	Gene18	child	0.292807	
+
+Gene10	Gene17	child	0.164955	
+Gene10	Gene19	child	0.244397	
+
+Gene15	Gene18	child	0.101845	
+
+Gene16	Gene18	child	0.434702	

@@ -79,7 +79,7 @@ public class HillClimbing {
             }
         }
 
-        if (bestMove == null) {
+        if (bestMove == null || bestMove.getScore() < 0.0) {
             return 0.0;
         }
 

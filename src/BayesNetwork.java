@@ -29,6 +29,7 @@ public class BayesNetwork {
         realNetwork = new Network();
 
         importEmptyNetworkFromCSV(network, dataFileName);
+        addRandomDAGEdgesToEmptyNetwork(network, 36);
         importNetworkFromCSV(realNetwork, dataFileName, structureFileName);
         HillClimbing hillClimbing = new HillClimbing(network, realNetwork);
         hillClimbing.climbHill();
@@ -44,7 +45,25 @@ public class BayesNetwork {
         network.printNetwork();
     }
 
-    private static void createEmptyNetwork(Network network, int numberOfNodes){
+    private static void addRandomDAGEdgesToEmptyNetwork(Network network, int numberOfEdges) {
+        Random random = new Random();
+        List<Node> nodes = new ArrayList<>();
+        nodes.addAll(network.getNodes());
+        if (numberOfEdges > network.size() * (network.size() - 1) / 2) {
+            numberOfEdges = network.size() * (network.size() - 1) / 2;
+        }
+        for (int i = 0; i < numberOfEdges; i++) {
+            Node parent = nodes.get(random.nextInt(nodes.size()));
+            Node child = nodes.get(random.nextInt(nodes.size()));
+            if (parent != child && !network.violatesDAG(parent, child)) {
+                network.addNewEdge(parent, child);
+            } else {
+                i--;
+            }
+        }
+    }
+
+    private static void createEmptyNetwork(Network network, int numberOfNodes) {
         numberOfVertices = numberOfNodes;
         format = "%0" + String.valueOf(numberOfVertices - 1).length() + "d";
 

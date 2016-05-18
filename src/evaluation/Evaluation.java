@@ -43,6 +43,10 @@ public class Evaluation {
         commonEdges.retainAll(foundEdges);
         phantomEdges.removeAll(realEdges);
         undiscoveredEdges.removeAll(foundEdges);
+
+        System.out.println("Common edges: " + commonEdges.size());
+        System.out.println("Phantom edges: " + phantomEdges.size());
+        System.out.println("Undiscovered edges: " + undiscoveredEdges.size());
     }
 
     public Set<Edge> getRealEdges() {

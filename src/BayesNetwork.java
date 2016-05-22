@@ -29,7 +29,7 @@ public class BayesNetwork {
         realNetwork = new Network();
 
         importEmptyNetworkFromCSV(network, dataFileName);
-        addRandomDAGEdgesToEmptyNetwork(network, 36);
+        addRandomDAGEdgesToEmptyNetwork(network, 0);
         importNetworkFromCSV(realNetwork, dataFileName, structureFileName);
         HillClimbing hillClimbing = new HillClimbing(network, realNetwork);
         hillClimbing.climbHill();

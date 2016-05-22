@@ -4,9 +4,7 @@ import model.Edge;
 import model.Network;
 import model.Node;
 
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.Set;
+import java.util.*;
 
 import static utils.GraphFunctions.containsEdge;
 
@@ -22,6 +20,7 @@ public class HillClimbing {
     private int maxSize = 5;
     private BayesianScoring bayesianScoring;
     private int maxNumberOfSteps = 1000;
+    private boolean firstStep = true;
 
     /**
      * constructor
@@ -32,6 +31,7 @@ public class HillClimbing {
         this.network = network;
         this.realNetwork = realNetwork;
         bayesianScoring = BayesianScoring.getInstance();
+        possibleMoves = new TreeSet<>();
     }
 
     /**
@@ -60,21 +60,99 @@ public class HillClimbing {
      * @return returns the score of the best move
      */
     public Double stepOne() {
-        possibleMoves = calculatePossibleMoves();
-        System.out.println("Number of possible moves to make: " + possibleMoves.size());
-        if (possibleMoves.size() == 0) {
-            return null;
-        }
-
         Move bestMove = null;
-        for (Move m : possibleMoves) {
-            if (!lastMoves.contains(m)) {
+        if (firstStep) {
+            firstStep = false;
+            possibleMoves = calculatePossibleMoves();
+            System.out.println("Number of possible moves to make: " + possibleMoves.size());
+            if (possibleMoves.size() == 0) {
+                return null;
+            }
+
+            for (Move m : possibleMoves) {
                 if (bestMove == null) {
                     bestMove = m;
                 } else {
                     if (m.calculateScore() > bestMove.getScore()) {
                         bestMove = m;
                     }
+                }
+            }
+        } else {
+            Set<Move> lastPossibleMoves = new TreeSet<>(possibleMoves);
+            Set<Move> movesToRecalculate = new TreeSet<>();
+            Move lastMove = lastMoves.getLast();
+            if (!lastMove.isAdding()) {
+                possibleMoves = calculatePossibleMoves();
+                System.out.println("Number of possible moves to make: " + possibleMoves.size());
+                if (possibleMoves.size() == 0) {
+                    return null;
+                }
+
+                for (Move m : possibleMoves) {
+                    if (!lastMoves.contains(m)) {
+                        if (bestMove == null) {
+                            bestMove = m;
+                        } else {
+                            if (m.calculateScore() > bestMove.getScore()) {
+                                bestMove = m;
+                            }
+                        }
+                    }
+                }
+            } else {
+                Iterator<Move> iterator = lastPossibleMoves.iterator();
+                while (iterator.hasNext()) {
+                    Move move = iterator.next();
+                    if (move.isAdding()) {
+                        if (network.violatesDAG(move.getEdge().getParent(), move.getEdge().getChild()) || containsEdge(network.getEdges(), move.getEdge().getParent(), move.getEdge().getChild())) {
+                            iterator.remove();
+                        }
+                    }
+                }
+                for (Move m : lastPossibleMoves) {
+                    if (m.getEdge().getChild() == lastMove.getEdge().getChild()) {
+                        movesToRecalculate.add(m);
+                    }
+                }
+                lastPossibleMoves.removeAll(movesToRecalculate);
+                possibleMoves = lastPossibleMoves;
+
+                movesToRecalculate.add(new Move(network, realNetwork, lastMove.getEdge(), false));
+
+                Move bestOldMove = null;
+                for (Move m : possibleMoves) {
+                    if (!lastMoves.contains(m)) {
+                        if (bestOldMove == null) {
+                            bestOldMove = m;
+                        } else {
+                            if (m.getScore() > bestOldMove.getScore()) {
+                                bestOldMove = m;
+                            }
+                        }
+                    }
+                }
+
+                Move bestNewMove = null;
+                for (Move m : movesToRecalculate) {
+                    if (!lastMoves.contains(m)) {
+                        if (bestNewMove == null) {
+                            bestNewMove = m;
+                        } else {
+                            if (m.calculateScore() > bestNewMove.getScore()) {
+                                bestNewMove = m;
+                            }
+                        }
+                    }
+                }
+
+                possibleMoves.addAll(movesToRecalculate);
+                if (bestNewMove == null) {
+                    bestMove = bestOldMove;
+                } else if (bestOldMove == null) {
+                    bestMove = bestNewMove;
+                } else {
+                    bestMove = bestNewMove.getScore() > bestOldMove.getScore() ? bestNewMove : bestOldMove;
                 }
             }
         }

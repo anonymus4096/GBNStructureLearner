@@ -4,7 +4,10 @@ import model.Edge;
 import model.Network;
 import model.Node;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.Set;
 
 import static utils.GraphFunctions.containsEdge;
 
@@ -17,7 +20,7 @@ public class HillClimbing {
     private Set<Move> possibleMoves;
     private int maxNumberOfParents = 5;
     private LinkedList<Move> lastMoves;
-    private int maxSize = 5;
+    private int maxSize = 1;
     private BayesianScoring bayesianScoring;
     private int maxNumberOfSteps = 1000;
     private boolean firstStep = true;
@@ -27,11 +30,13 @@ public class HillClimbing {
      *
      * @param network network object that contains all the nodes and edges already set
      */
-    public HillClimbing(Network network, Network realNetwork) {
+    public HillClimbing(Network network, Network realNetwork, int numberOfLinesToUse) {
         this.network = network;
         this.realNetwork = realNetwork;
         bayesianScoring = BayesianScoring.getInstance();
-        possibleMoves = new TreeSet<>();
+        bayesianScoring.setNumberOfLinesToUse(numberOfLinesToUse);
+        bayesianScoring.initializeValues();
+        possibleMoves = new HashSet<>();
     }
 
     /**
@@ -79,27 +84,71 @@ public class HillClimbing {
                 }
             }
         } else {
-            Set<Move> lastPossibleMoves = new TreeSet<>(possibleMoves);
-            Set<Move> movesToRecalculate = new TreeSet<>();
+            Set<Move> lastPossibleMoves = new HashSet<>(possibleMoves);
+            Set<Move> movesToRecalculate = new HashSet<>();
             Move lastMove = lastMoves.getLast();
             if (!lastMove.isAdding()) {
-                possibleMoves = calculatePossibleMoves();
-                System.out.println("Number of possible moves to make: " + possibleMoves.size());
-                if (possibleMoves.size() == 0) {
-                    return null;
+                Set<Node> descendants = lastMove.getEdge().getChild().getDescendants();
+                Set<Node> ancestors = lastMove.getEdge().getParent().getAncestors();
+
+                descendants.add(lastMove.getEdge().getChild());
+                ancestors.add(lastMove.getEdge().getParent());
+
+                for (Move m : lastPossibleMoves) {
+                    if (m.getEdge().getChild() == lastMove.getEdge().getChild()) {
+                        movesToRecalculate.add(m);
+                    }
                 }
 
+                for (Node parent : ancestors) {
+                    for (Node child : descendants) {
+                        if (parent != child && !network.violatesDAG(child, parent)) {
+                            movesToRecalculate.add(new Move(network, realNetwork, new Edge(network, child, parent), true));
+                        }
+                    }
+                }
+
+
+                lastPossibleMoves.removeAll(movesToRecalculate);
+                movesToRecalculate.remove(lastMove);
+                possibleMoves = lastPossibleMoves;
+
+                Move bestOldMove = null;
                 for (Move m : possibleMoves) {
                     if (!lastMoves.contains(m)) {
-                        if (bestMove == null) {
-                            bestMove = m;
+                        if (bestOldMove == null) {
+                            bestOldMove = m;
                         } else {
-                            if (m.calculateScore() > bestMove.getScore()) {
-                                bestMove = m;
+                            if (m.getScore() > bestOldMove.getScore()) {
+                                bestOldMove = m;
                             }
                         }
                     }
                 }
+
+                Move bestNewMove = null;
+                for (Move m : movesToRecalculate) {
+                    if (!lastMoves.contains(m)) {
+                        if (bestNewMove == null) {
+                            bestNewMove = m;
+                        } else {
+                            if (m.calculateScore() > bestNewMove.getScore()) {
+                                bestNewMove = m;
+                            }
+                        }
+                    }
+                }
+
+                possibleMoves.addAll(movesToRecalculate);
+
+                if (bestNewMove == null) {
+                    bestMove = bestOldMove;
+                } else if (bestOldMove == null) {
+                    bestMove = bestNewMove;
+                } else {
+                    bestMove = bestNewMove.getScore() > bestOldMove.getScore() ? bestNewMove : bestOldMove;
+                }
+
             } else {
                 Iterator<Move> iterator = lastPossibleMoves.iterator();
                 while (iterator.hasNext()) {

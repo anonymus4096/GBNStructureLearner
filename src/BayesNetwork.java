@@ -19,9 +19,10 @@ public class BayesNetwork {
     public static Network realNetwork;
     private static int numberOfVertices = 100;
     private static String format = "%03d";
+    private static int numberOfLinesToUse = 5000;
 
-    private static String dataFileName = "res/sample.0.small.data.csv";
-    private static String structureFileName = "res/sample.0.small.structure";
+    private static String dataFileName = "res/sample.0.data.csv";
+    private static String structureFileName = "res/sample.0.structure";
 
 
     public static void main(String[] args) {
@@ -31,11 +32,11 @@ public class BayesNetwork {
         importEmptyNetworkFromCSV(network, dataFileName);
         addRandomDAGEdgesToEmptyNetwork(network, 0);
         importNetworkFromCSV(realNetwork, dataFileName, structureFileName);
-        HillClimbing hillClimbing = new HillClimbing(network, realNetwork);
+        HillClimbing hillClimbing = new HillClimbing(network, realNetwork, numberOfLinesToUse);
         hillClimbing.climbHill();
 
-        //network = new Network("myNetwork.txt");
-        //realNetwork = new Network("realNetwork.txt");
+//        network = new Network("myNetworkSuccess.txt");
+//        importNetworkFromCSV(realNetwork, dataFileName, structureFileName);
         Evaluation evaluation = new Evaluation(realNetwork, network);
         evaluation.evaluate();
 
@@ -145,6 +146,7 @@ public class BayesNetwork {
     private static void importNetworkFromCSV(Network network, String nodesFileName, String edgesFileName) {
         importEmptyNetworkFromCSV(network, nodesFileName);
 
+        int numberOfLines = 0;
         try {
             Scanner scanner = new Scanner(new File(edgesFileName));
             while (scanner.hasNextLine()) {
@@ -159,5 +161,9 @@ public class BayesNetwork {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
+    }
+
+    public static int getNumberOfLinesToUse() {
+        return numberOfLinesToUse;
     }
 }

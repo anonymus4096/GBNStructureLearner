@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.*;
 
+
 /**
  * Created by Benedek on 5/5/2016.
  */
@@ -28,6 +29,7 @@ public class BayesianScoring {
     private int dataLength;
     private DoubleMatrix betaStar;
     private DoubleMatrix mu;
+    private int numberOfLinesToUse;
 
     private static BayesianScoring ourInstance = new BayesianScoring();
 
@@ -39,7 +41,6 @@ public class BayesianScoring {
     }
 
     private BayesianScoring() {
-        initializeValues();
     }
 
     public void setNetwork(Network network) {
@@ -50,13 +51,17 @@ public class BayesianScoring {
         this.move = move;
     }
 
-    private void initializeValues() {
-        mean = getMeansOfData(fileName);
-        variance = getVarianceOfData(fileName);
+    public void initializeValues() {
+        mean = getMeansOfData(fileName, numberOfLinesToUse);
+        variance = getVarianceOfData(fileName, numberOfLinesToUse);
         mu = DoubleMatrix.zeros(n, 1);
     }
 
-    private DoubleMatrix getVarianceOfData(String fileName) {
+    public void setNumberOfLinesToUse(int numberOfLinesToUse) {
+        this.numberOfLinesToUse = numberOfLinesToUse;
+    }
+
+    private DoubleMatrix getVarianceOfData(String fileName, int numberOfLinesToUse) {
         DoubleMatrix sumOfVariances = null;
         try {
             Scanner scanner = new Scanner(new File(fileName));
@@ -66,7 +71,8 @@ public class BayesianScoring {
             sumOfVariances = new DoubleMatrix(n, n);
             String[] stringValues;
             double[] realValues;
-            while (scanner.hasNextLine()) {
+            int dataLines = 0;
+            while (scanner.hasNextLine() && dataLines < numberOfLinesToUse) {
                 String line = scanner.nextLine();
                 stringValues = line.split(",");
                 realValues = new double[n];
@@ -75,6 +81,7 @@ public class BayesianScoring {
                     realValues[columnIndex] = Double.valueOf(stringValues[columnIndex]);
                     columnIndex++;
                 }
+                dataLines++;
 
                 DoubleMatrix deviation = new DoubleMatrix(realValues);
                 deviation = deviation.sub(mean);
@@ -88,7 +95,7 @@ public class BayesianScoring {
         return sumOfVariances;
     }
 
-    private DoubleMatrix getMeansOfData(String fileName) {
+    private DoubleMatrix getMeansOfData(String fileName, int numberOfLinesToUse) {
         double[] sumOfColumns = new double[0];
         try {
             Scanner scanner = new Scanner(new File(fileName));
@@ -99,7 +106,7 @@ public class BayesianScoring {
             sumOfColumns = new double[numberOfColumns];
             String[] values;
             int dataLines = 0;
-            while (scanner.hasNextLine()) {
+            while (scanner.hasNextLine() && dataLines < numberOfLinesToUse) {
                 String line = scanner.nextLine();
                 values = line.split(",");
                 for (int i = 0; i < numberOfColumns; i++) {

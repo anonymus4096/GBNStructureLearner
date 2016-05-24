@@ -36,6 +36,30 @@ public class Node implements Comparable {
         return parents;
     }
 
+    public Set<Node> getAncestors() {
+        Set<Node> ancestors = getParents();
+        ancestors = getAllAncestors(ancestors);
+        return ancestors;
+    }
+
+    private Set<Node> getAllAncestors(Set<Node> currentAncestors) {
+        Set<Node> newAncestors = new TreeSet<>(currentAncestors);
+        for (Node n : currentAncestors) {
+            boolean anyNewNodes = false;
+            for (Node parent : n.getParents()) {
+                if (!containsNodeWithName(newAncestors, parent.getName())) {
+                    newAncestors.add(parent);
+                    anyNewNodes = true;
+                }
+            }
+            if (anyNewNodes) {
+                newAncestors = getAllAncestors(newAncestors);
+            }
+        }
+        return newAncestors;
+    }
+
+
     public Set<Node> getDescendants() {
         Set<Node> descendants = getChildren();
         descendants = getAllDescendants(descendants);

@@ -2,36 +2,27 @@ package search;
 
 import model.Edge;
 import model.Network;
-import model.Node;
-import utils.GraphFunctions;
-
-import java.util.Set;
-import java.util.TreeSet;
 
 /**
  * Created by Benedek on 4/23/2016.
- * Encapsulates one move that can be made in the process of building a DAG network (adding a set of edges)
- * The class is equipped to represent adding multiple edges, though we will only be using this with a single edge
+ * Encapsulates one move that can be made in the process of building a DAG network
+ * Moves can be the following: type, deleting and reversing an edge
  */
 public class Move implements Comparable {
     private Edge edge = null;
     private Double score = null;
     private Network network;
-    private Network realNetwork;
-    private boolean adding;
-    private String dataFileName = "res/sample.0.data.csv";
+    private MoveType type;
 
-    public Move(Network myNetwork, Network actualNetwork, boolean add) {
+    public Move(Network myNetwork, MoveType add) {
         network = myNetwork;
-        realNetwork = actualNetwork;
-        this.adding = add;
+        this.type = add;
     }
 
-    public Move(Network myNetwork, Network actualNetwork, Edge edge, boolean add) {
+    Move(Network myNetwork, Edge edge, MoveType add) {
         network = myNetwork;
-        realNetwork = actualNetwork;
         this.edge = edge;
-        this.adding = add;
+        this.type = add;
     }
 
     /**
@@ -48,7 +39,7 @@ public class Move implements Comparable {
      *
      * @return score of the move
      */
-    public double calculateScore() {
+    double calculateScore() {
         BayesianScoring bayesianScoring = BayesianScoring.getInstance();
         bayesianScoring.setMove(this);
         bayesianScoring.setNetwork(network);
@@ -58,60 +49,19 @@ public class Move implements Comparable {
         return calculatedScore;
     }
 
-    private double getDummyScore() {
-        double dummyScore = 0.0;
-
-        Node realChild = GraphFunctions.getNodeWithName(realNetwork.getNodes(), edge.getChild().getName());
-        Node newChild = GraphFunctions.getNodeWithName(network.getNodes(), edge.getChild().getName());
-
-        Set<String> realParentNames = new TreeSet<>();
-        if (realChild != null) {
-            for (Node n : realChild.getParents()) {
-                realParentNames.add(n.getName());
-            }
-        } else {
-            throw new IllegalArgumentException("The real network structure and the new network structure has different nodes.");
-        }
-
-        Set<String> newParentNames = new TreeSet<>();
-        if (newChild != null) {
-            for (Node n : newChild.getParents()) {
-                newParentNames.add(n.getName());
-            }
-        } else {
-            throw new IllegalArgumentException("The real network structure and the new network structure has different nodes.");
-        }
-        if (adding) {
-            newParentNames.add(edge.getParent().getName());
-        } else {
-            newParentNames.remove(edge.getParent().getName());
-        }
-
-        Set<String> intersectionOfParentNames = new TreeSet<>(realParentNames);
-        intersectionOfParentNames.retainAll(newParentNames);
-        if (intersectionOfParentNames.size() == 0) {
-            dummyScore = 0;
-        } else {
-            dummyScore = intersectionOfParentNames.size() / (Math.sqrt(newParentNames.size()) * Math.sqrt(realParentNames.size()));
-        }
-
-
-        return dummyScore;
-    }
-
-    public Edge getEdge() {
+    Edge getEdge() {
         return edge;
     }
 
-    public double getScore() {
+    double getScore() {
         if (score == null) {
             score = calculateScore();
         }
         return score;
     }
 
-    public boolean isAdding() {
-        return adding;
+    MoveType getType() {
+        return type;
     }
 
     @Override
@@ -123,9 +73,11 @@ public class Move implements Comparable {
         } else if (edge.compareTo(e) < 0) {
             return -1;
         } else {
-            if (adding == m.isAdding()) {
+            if (type == m.getType()) {
                 return 0;
-            } else if (!adding && m.isAdding()) {
+            } else if ((type == MoveType.adding && (m.getType() == MoveType.deleting || m.getType() == MoveType.reversing)) ||
+                    (type == MoveType.reversing && m.getType() == MoveType.deleting)) {
+                // let's say adding > reversing > deleting
                 return -1;
             } else {
                 return 1;
@@ -134,12 +86,28 @@ public class Move implements Comparable {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this.getClass().equals(obj.getClass())) {
-            Move m = (Move) obj;
-            return edge.compareTo(m.edge) == 0;
-        } else {
-            return false;
-        }
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Move move = (Move) o;
+
+        if (edge != null ? !edge.equals(move.edge) : move.edge != null) return false;
+        if (network != null ? !network.equals(move.network) : move.network != null) return false;
+        return type == move.type;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = edge != null ? edge.hashCode() : 0;
+        result = 31 * result + (network != null ? network.hashCode() : 0);
+        result = 31 * result + (type != null ? type.hashCode() : 0);
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return edge.getParent().getName() + " --> " + edge.getChild().getName() + ", " + this.getType();
     }
 }

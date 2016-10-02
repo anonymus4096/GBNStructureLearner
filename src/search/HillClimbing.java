@@ -16,11 +16,10 @@ import static utils.GraphFunctions.containsEdge;
  */
 public class HillClimbing {
     private Network network;
-    private Network realNetwork;
     private Set<Move> possibleMoves;
     private int maxNumberOfParents = 5;
     private LinkedList<Move> lastMoves;
-    private int maxSize = 1;
+    private int maxSize = 2;
     private BayesianScoring bayesianScoring;
     private int maxNumberOfSteps = 1000;
     private boolean firstStep = true;
@@ -30,9 +29,8 @@ public class HillClimbing {
      *
      * @param network network object that contains all the nodes and edges already set
      */
-    public HillClimbing(Network network, Network realNetwork, int numberOfLinesToUse) {
+    public HillClimbing(Network network, int numberOfLinesToUse) {
         this.network = network;
-        this.realNetwork = realNetwork;
         bayesianScoring = BayesianScoring.getInstance();
         bayesianScoring.setNumberOfLinesToUse(numberOfLinesToUse);
         bayesianScoring.initializeValues();
@@ -45,7 +43,7 @@ public class HillClimbing {
      */
     public void climbHill() {
         long startTime = System.nanoTime();
-        Double scoreBestMove = 0.0;
+        Double scoreBestMove;
 
         lastMoves = new LinkedList<>();
 
@@ -67,6 +65,7 @@ public class HillClimbing {
     public Double stepOne() {
         Move bestMove = null;
         if (firstStep) {
+            // if it's the first step, collect all possible moves
             firstStep = false;
             possibleMoves = calculatePossibleMoves();
             System.out.println("Number of possible moves to make: " + possibleMoves.size());
@@ -84,35 +83,118 @@ public class HillClimbing {
                 }
             }
         } else {
+            // if it's not the first step, try to minimize the amount of calculation
             Set<Move> lastPossibleMoves = new HashSet<>(possibleMoves);
             Set<Move> movesToRecalculate = new HashSet<>();
             Move lastMove = lastMoves.getLast();
-            if (!lastMove.isAdding()) {
+            if (lastMove.getType() == MoveType.deleting) {
+                //ADDING MOVES
+
+
+                // if we deleted the last time, add the moves that are possible again
                 Set<Node> descendants = lastMove.getEdge().getChild().getDescendants();
                 Set<Node> ancestors = lastMove.getEdge().getParent().getAncestors();
 
                 descendants.add(lastMove.getEdge().getChild());
                 ancestors.add(lastMove.getEdge().getParent());
 
+                // for all of the edges, where the child is the same as the child of the last edge that was deleted,
+                // recalculate their score
                 for (Move m : lastPossibleMoves) {
                     if (m.getEdge().getChild() == lastMove.getEdge().getChild()) {
                         movesToRecalculate.add(m);
                     }
                 }
 
+                // add every move, that does not violate the DAG condition anymore because of the deleting
                 for (Node parent : ancestors) {
                     for (Node child : descendants) {
                         if (parent != child && !network.violatesDAG(child, parent)) {
-                            movesToRecalculate.add(new Move(network, realNetwork, new Edge(network, child, parent), true));
+                            movesToRecalculate.add(new Move(network, new Edge(network, child, parent), MoveType.adding));
                         }
                     }
                 }
 
+                // REMOVING MOVES
+                deleteInvalidMoves(lastPossibleMoves);
+                deleteInvalidMoves(movesToRecalculate);
 
+                // CALCULATE WHAT WE NEED, AND FIND THE BEST MOVE
                 lastPossibleMoves.removeAll(movesToRecalculate);
                 movesToRecalculate.remove(lastMove);
                 possibleMoves = lastPossibleMoves;
 
+                // find the best move from the last turn
+                Move bestOldMove = null;
+                for (Move m : possibleMoves) {
+                    // TODO add condition to not allow trying for last moves even with different move types
+                    if (!lastMoves.contains(m) || !lastMoves.contains(new Move(network, m.getEdge().getReverse(), MoveType.reversing))) {
+                        if (bestOldMove == null) {
+                            bestOldMove = m;
+                        } else {
+                            if (m.getScore() > bestOldMove.getScore()) {
+                                bestOldMove = m;
+                            }
+                        }
+                    }
+                }
+
+                // find the new best move, that was not possible last turn
+                Move bestNewMove = null;
+                for (Move m : movesToRecalculate) {
+                    if (!lastMoves.contains(m)) {
+                        if (bestNewMove == null) {
+                            bestNewMove = m;
+                        } else {
+                            if (m.calculateScore() > bestNewMove.getScore()) {
+                                bestNewMove = m;
+                            }
+                        }
+                    }
+                }
+
+                possibleMoves.addAll(movesToRecalculate);
+
+                // find the move with the highest score
+                if (bestNewMove == null) {
+                    bestMove = bestOldMove;
+                } else if (bestOldMove == null) {
+                    bestMove = bestNewMove;
+                } else {
+                    bestMove = bestNewMove.getScore() > bestOldMove.getScore() ? bestNewMove : bestOldMove;
+                }
+
+            } else if (lastMove.getType() == MoveType.adding) {
+                // DELETING MOVES
+                deleteInvalidMoves(lastPossibleMoves);
+
+                // ADDING MOVES
+
+                for (Move move : lastPossibleMoves) {
+                    if (move.getType() == MoveType.reversing &&
+                            (move.getEdge().getChild() == lastMove.getEdge().getChild()
+                                    || move.getEdge().getParent() == lastMove.getEdge().getChild())) {
+                        movesToRecalculate.add(move);
+                    }
+                }
+                if (!network.reversingViolatesDAG(lastMove.getEdge().getParent(), lastMove.getEdge().getChild())) {
+                    movesToRecalculate.add(new Move(network, lastMove.getEdge(), MoveType.reversing));
+                }
+                movesToRecalculate.add(new Move(network, lastMove.getEdge(), MoveType.deleting));
+
+                for (Move m : lastPossibleMoves) {
+                    if (m.getEdge().getChild() == lastMove.getEdge().getChild()) {
+                        movesToRecalculate.add(m);
+                    }
+                }
+                lastPossibleMoves.removeAll(movesToRecalculate);
+                possibleMoves = lastPossibleMoves;
+
+                //for (Move move : lastPossibleMoves) System.out.println(move.toString());
+                //System.out.println();
+                //for (Move move : movesToRecalculate) System.out.println(move.toString());
+
+                // CALCULATE WHAT WE NEED, AND FIND THE BEST MOVE
                 Move bestOldMove = null;
                 for (Move m : possibleMoves) {
                     if (!lastMoves.contains(m)) {
@@ -140,7 +222,6 @@ public class HillClimbing {
                 }
 
                 possibleMoves.addAll(movesToRecalculate);
-
                 if (bestNewMove == null) {
                     bestMove = bestOldMove;
                 } else if (bestOldMove == null) {
@@ -148,27 +229,27 @@ public class HillClimbing {
                 } else {
                     bestMove = bestNewMove.getScore() > bestOldMove.getScore() ? bestNewMove : bestOldMove;
                 }
-
             } else {
-                Iterator<Move> iterator = lastPossibleMoves.iterator();
-                while (iterator.hasNext()) {
-                    Move move = iterator.next();
-                    if (move.isAdding()) {
-                        if (network.violatesDAG(move.getEdge().getParent(), move.getEdge().getChild()) || containsEdge(network.getEdges(), move.getEdge().getParent(), move.getEdge().getChild())) {
-                            iterator.remove();
-                        }
-                    }
+                // if the last move reversed the edge
+
+                // DELETING MOVES
+                deleteInvalidMoves(lastPossibleMoves);
+
+                // ADDING MOVES
+                if (!network.reversingViolatesDAG(lastMove.getEdge().getReverse().getParent(), lastMove.getEdge().getReverse().getChild())) {
+                    movesToRecalculate.add(new Move(network, lastMove.getEdge().getReverse(), MoveType.reversing));
                 }
+                movesToRecalculate.add(new Move(network, lastMove.getEdge().getReverse(), MoveType.deleting));
+
                 for (Move m : lastPossibleMoves) {
-                    if (m.getEdge().getChild() == lastMove.getEdge().getChild()) {
+                    if (m.getEdge().getChild() == lastMove.getEdge().getReverse().getChild()) {
                         movesToRecalculate.add(m);
                     }
                 }
                 lastPossibleMoves.removeAll(movesToRecalculate);
                 possibleMoves = lastPossibleMoves;
 
-                movesToRecalculate.add(new Move(network, realNetwork, lastMove.getEdge(), false));
-
+                // CALCULATE WHAT WE NEED, AND FIND THE BEST MOVE
                 Move bestOldMove = null;
                 for (Move m : possibleMoves) {
                     if (!lastMoves.contains(m)) {
@@ -218,28 +299,42 @@ public class HillClimbing {
         lastMoves.add(bestMove);
 
         makeMove(bestMove);
-        if (bestMove.isAdding()) {
+        if (bestMove.getType() == MoveType.adding) {
             System.out.println("Added edge: " + bestMove.getEdge().getParent().getName() + " --> " + bestMove.getEdge().getChild().getName() + " : \t" + bestMove.getScore());
-        } else {
+        } else if (bestMove.getType() == MoveType.deleting) {
             System.out.println("Deleting edge: " + bestMove.getEdge().getParent().getName() + " --> " + bestMove.getEdge().getChild().getName() + " : \t" + bestMove.getScore());
+        } else {
+            System.out.println("Reversing edge: " + bestMove.getEdge().getParent().getName() + " --> " + bestMove.getEdge().getChild().getName() + " : \t" + bestMove.getScore());
         }
 
         return bestMove.getScore();
     }
 
+    private void deleteInvalidMoves(Set<Move> possibleMoves) {
+        Iterator<Move> iterator = possibleMoves.iterator();
 
-    /**
-     * makes the move given as a parameter - meaning it adds the new edges the move consist of
-     *
-     * @param bestMove move containing the edges to be added
-     */
-    private void makeMove(Move bestMove) {
-        if (bestMove.isAdding()) {
-            network.addNewEdge(bestMove.getEdge().getParent(), bestMove.getEdge().getChild());
-        } else {
-            network.deleteEdge(bestMove.getEdge().getParent().getName(), bestMove.getEdge().getChild().getName());
+        while (iterator.hasNext()) {
+            Move move = iterator.next();
+            if (move.getType() == MoveType.adding) {
+                if (network.violatesDAG(move.getEdge().getParent(), move.getEdge().getChild())
+                        || containsEdge(network.getEdges(), move.getEdge().getParent(), move.getEdge().getChild())) {
+                    iterator.remove();
+                }
+            } else if (move.getType() == MoveType.reversing) {
+                if (network.reversingViolatesDAG(move.getEdge().getParent(), move.getEdge().getChild())
+                        || !containsEdge(network.getEdges(), move.getEdge().getParent(), move.getEdge().getChild())) {
+                    iterator.remove();
+                }
+            } else {
+                if (!containsEdge(network.getEdges(), move.getEdge().getParent(), move.getEdge().getChild())) {
+                    iterator.remove();
+                }
+            }
         }
+
+
     }
+
 
     /**
      * finds all possible moves to be made
@@ -251,13 +346,32 @@ public class HillClimbing {
 
         Set<Edge> possibleEdges = calculatePossibleEdges();
         for (Edge e : possibleEdges) {
-            moves.add(new Move(network, realNetwork, e, true));
+            moves.add(new Move(network, e, MoveType.adding));
         }
         for (Edge e : network.getEdges()) {
-            moves.add(new Move(network, realNetwork, e, false));
+            moves.add(new Move(network, e, MoveType.deleting));
+        }
+
+        for (Edge e : network.getEdges()) {
+            moves.add(new Move(network, e, MoveType.reversing));
         }
 
         return moves;
+    }
+
+    /**
+     * makes the move given as a parameter - meaning it adds the new edges the move consist of
+     *
+     * @param bestMove move containing the edges to be added
+     */
+    private void makeMove(Move bestMove) {
+        if (bestMove.getType() == MoveType.adding) {
+            network.addNewEdge(bestMove.getEdge().getParent(), bestMove.getEdge().getChild());
+        } else if (bestMove.getType() == MoveType.deleting) {
+            network.deleteEdge(bestMove.getEdge().getParent().getName(), bestMove.getEdge().getChild().getName());
+        } else {
+            network.reverseEdge(bestMove.getEdge().getParent().getName(), bestMove.getEdge().getChild().getName());
+        }
     }
 
     /**

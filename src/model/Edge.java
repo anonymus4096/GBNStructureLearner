@@ -46,6 +46,10 @@ public class Edge implements Comparable {
         this.strength = strength;
     }
 
+    public Edge getReverse() {
+        return new Edge(network, child, parent);
+    }
+
     /**
      * Sorts edges first by their parent's name, then their child's name
      *

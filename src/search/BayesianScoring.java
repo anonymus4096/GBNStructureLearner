@@ -16,6 +16,7 @@ import java.util.*;
  * Created by Benedek on 5/5/2016.
  */
 public class BayesianScoring {
+    private static BayesianScoring ourInstance = new BayesianScoring();
     private Move move;
     private Network network;
     private String fileName = "res/sample.0.data.csv";
@@ -31,16 +32,14 @@ public class BayesianScoring {
     private DoubleMatrix mu;
     private int numberOfLinesToUse;
 
-    private static BayesianScoring ourInstance = new BayesianScoring();
+    private BayesianScoring() {
+    }
 
     public static BayesianScoring getInstance() {
         if (ourInstance == null) {
             ourInstance = new BayesianScoring();
         }
         return ourInstance;
-    }
-
-    private BayesianScoring() {
     }
 
     public void setNetwork(Network network) {
@@ -57,8 +56,34 @@ public class BayesianScoring {
         mu = DoubleMatrix.zeros(n, 1);
     }
 
-    public void setNumberOfLinesToUse(int numberOfLinesToUse) {
-        this.numberOfLinesToUse = numberOfLinesToUse;
+    private DoubleMatrix getMeansOfData(String fileName, int numberOfLinesToUse) {
+        double[] sumOfColumns = new double[0];
+        try {
+            Scanner scanner = new Scanner(new File(fileName));
+            scanner.useDelimiter(",");
+            String headerLine = scanner.nextLine();
+            namesOfNodes = Arrays.asList(headerLine.split(","));
+            int numberOfColumns = headerLine.split(",").length;
+            sumOfColumns = new double[numberOfColumns];
+            String[] values;
+            int dataLines = 0;
+            while (scanner.hasNextLine() && dataLines < numberOfLinesToUse) {
+                String line = scanner.nextLine();
+                values = line.split(",");
+                for (int i = 0; i < numberOfColumns; i++) {
+                    sumOfColumns[i] = Double.valueOf(values[i]);
+                }
+                dataLines++;
+            }
+            dataLength = dataLines;
+            for (int i = 0; i < numberOfColumns; i++) {
+                sumOfColumns[i] = sumOfColumns[i] / dataLines;
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return sumOfColumns.length == 0 ? null : new DoubleMatrix(sumOfColumns);
     }
 
     private DoubleMatrix getVarianceOfData(String fileName, int numberOfLinesToUse) {
@@ -95,34 +120,8 @@ public class BayesianScoring {
         return sumOfVariances;
     }
 
-    private DoubleMatrix getMeansOfData(String fileName, int numberOfLinesToUse) {
-        double[] sumOfColumns = new double[0];
-        try {
-            Scanner scanner = new Scanner(new File(fileName));
-            scanner.useDelimiter(",");
-            String headerLine = scanner.nextLine();
-            namesOfNodes = Arrays.asList(headerLine.split(","));
-            int numberOfColumns = headerLine.split(",").length;
-            sumOfColumns = new double[numberOfColumns];
-            String[] values;
-            int dataLines = 0;
-            while (scanner.hasNextLine() && dataLines < numberOfLinesToUse) {
-                String line = scanner.nextLine();
-                values = line.split(",");
-                for (int i = 0; i < numberOfColumns; i++) {
-                    sumOfColumns[i] = Double.valueOf(values[i]);
-                }
-                dataLines++;
-            }
-            dataLength = dataLines;
-            for (int i = 0; i < numberOfColumns; i++) {
-                sumOfColumns[i] = sumOfColumns[i] / dataLines;
-            }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        return sumOfColumns.length == 0 ? null : new DoubleMatrix(sumOfColumns);
+    public void setNumberOfLinesToUse(int numberOfLinesToUse) {
+        this.numberOfLinesToUse = numberOfLinesToUse;
     }
 
     public Double calculateScoreOfMove() {
@@ -132,16 +131,21 @@ public class BayesianScoring {
 
 
         Double scoreBefore, scoreAfter;
-        if (move.isAdding()) {
+        if (move.getType() == MoveType.adding) {
             scoreBefore = calculateScore();
             network.addNewEdge(parent, child);
             scoreAfter = calculateScore();
             network.deleteEdge(parent, child);
+        } else if (move.getType() == MoveType.deleting) {
+            scoreBefore = calculateScore();
+            network.deleteEdge(parent, child);
+            scoreAfter = calculateScore();
+            network.addNewEdge(parent, child);
         } else {
             scoreBefore = calculateScore();
-            network.deleteEdge(parent, child);
+            network.reverseEdge(parent, child);
             scoreAfter = calculateScore();
-            network.addNewEdge(parent, child);
+            network.reverseEdge(child, parent);
         }
 
         // it has to be substraction because we calculate the logarithms of the scores
@@ -183,12 +187,14 @@ public class BayesianScoring {
         return ans;
     }
 
-    private double logc(int nPar, Double alphaPar) {
-        double sum = 0;
-        for (int i = 1; i <= nPar; i++) {
-            sum += Gamma.logGamma((alphaPar + 1 - i) / 2);
+    private DoubleMatrix getBetaW(Set<Node> nodes) {
+        DoubleMatrix inverseBeta = Solve.pinv(getBeta());
+        indexes = new TreeSet<>();
+        for (Node n : nodes) {
+            indexes.add(namesOfNodes.indexOf(n.getName()));
         }
-        return -1 * ((alphaPar * nPar / 2) * Math.log(2) + (n * (n - 1) / 4) * Math.log(Math.PI) + sum);
+        DoubleMatrix inverseBetaW = getSubMatrix(inverseBeta, indexes);
+        return Solve.pinv(inverseBetaW);
     }
 
     public DoubleMatrix getBetaStarW(DoubleMatrix betaW) {
@@ -196,6 +202,14 @@ public class BayesianScoring {
         DoubleMatrix meanW = getSubVector(mean, indexes);
         DoubleMatrix muW = getSubVector(mu, indexes);
         return betaW.add(getSubMatrix(variance, indexes)).add(meanW.sub(muW).mmul(meanW.sub(muW).transpose())).mul(((v * M) / (v + M)));
+    }
+
+    private double logc(int nPar, Double alphaPar) {
+        double sum = 0;
+        for (int i = 1; i <= nPar; i++) {
+            sum += Gamma.logGamma((alphaPar + 1 - i) / 2);
+        }
+        return -1 * ((alphaPar * nPar / 2) * Math.log(2) + (n * (n - 1) / 4) * Math.log(Math.PI) + sum);
     }
 
     public double getDeterminant(DoubleMatrix matrix) {
@@ -212,6 +226,59 @@ public class BayesianScoring {
         determinant *= getSignOfPermutation(LUDecomposition.p);
 
         return determinant;
+    }
+
+    public DoubleMatrix getBeta() {
+        if (beta == null) {
+            calculateBeta();
+        }
+        return beta;
+    }
+
+    private DoubleMatrix getSubMatrix(DoubleMatrix matrix, Set<Integer> indexes) {
+        DoubleMatrix temp = new DoubleMatrix(indexes.size(), matrix.getColumns());
+        int newIndexRow = 0;
+        for (Integer row : indexes) {
+            for (int col = 0; col < matrix.columns; col++) {
+                temp.put(newIndexRow, col, matrix.get(row, col));
+            }
+            newIndexRow++;
+        }
+
+        DoubleMatrix subMatrix = new DoubleMatrix(indexes.size(), indexes.size());
+        int newIndexCol = 0;
+        for (Integer col : indexes) {
+            for (int row = 0; row < temp.rows; row++) {
+                subMatrix.put(row, newIndexCol, temp.get(row, col));
+            }
+            newIndexCol++;
+        }
+
+        return subMatrix;
+    }
+
+    private DoubleMatrix getSubVector(DoubleMatrix vector, Set<Integer> indexes) {
+        if (vector.rows != 1 && vector.columns != 1) {
+            throw new IllegalArgumentException("This is not a vector!");
+        }
+        boolean transposed = false;
+        if (vector.rows == 1) {
+            vector = vector.transpose();
+            transposed = true;
+        }
+
+        DoubleMatrix subVector = new DoubleMatrix(indexes.size(), 1);
+        int newIndexRow = 0;
+        for (Integer row : indexes) {
+            subVector.put(newIndexRow, 0, vector.get(row, 0));
+            newIndexRow++;
+        }
+
+        if (transposed) {
+            subVector = subVector.transpose();
+        }
+
+        return subVector;
     }
 
     private Integer getSignOfPermutation(DoubleMatrix p) {
@@ -247,61 +314,14 @@ public class BayesianScoring {
         return sum % 2 == 0 ? 1 : -1;
     }
 
+    private DoubleMatrix calculateBeta() {
+        DoubleMatrix T = DoubleMatrix.eye(network.size());
 
-    private DoubleMatrix getBetaW(Set<Node> nodes) {
-        DoubleMatrix inverseBeta = Solve.pinv(getBeta());
-        indexes = new TreeSet<>();
-        for (Node n : nodes) {
-            indexes.add(namesOfNodes.indexOf(n.getName()));
-        }
-        DoubleMatrix inverseBetaW = getSubMatrix(inverseBeta, indexes);
-        return Solve.pinv(inverseBetaW);
-    }
+        v = (double) (n + 1);
+        alpha = (double) n;
 
-    private DoubleMatrix getSubVector(DoubleMatrix vector, Set<Integer> indexes) {
-        if (vector.rows != 1 && vector.columns != 1) {
-            throw new IllegalArgumentException("This is not a vector!");
-        }
-        boolean transposed = false;
-        if (vector.rows == 1) {
-            vector = vector.transpose();
-            transposed = true;
-        }
-
-        DoubleMatrix subVector = new DoubleMatrix(indexes.size(), 1);
-        int newIndexRow = 0;
-        for (Integer row : indexes) {
-            subVector.put(newIndexRow, 0, vector.get(row, 0));
-            newIndexRow++;
-        }
-
-        if (transposed) {
-            subVector = subVector.transpose();
-        }
-
-        return subVector;
-    }
-
-    private DoubleMatrix getSubMatrix(DoubleMatrix matrix, Set<Integer> indexes) {
-        DoubleMatrix temp = new DoubleMatrix(indexes.size(), matrix.getColumns());
-        int newIndexRow = 0;
-        for (Integer row : indexes) {
-            for (int col = 0; col < matrix.columns; col++) {
-                temp.put(newIndexRow, col, matrix.get(row, col));
-            }
-            newIndexRow++;
-        }
-
-        DoubleMatrix subMatrix = new DoubleMatrix(indexes.size(), indexes.size());
-        int newIndexCol = 0;
-        for (Integer col : indexes) {
-            for (int row = 0; row < temp.rows; row++) {
-                subMatrix.put(row, newIndexCol, temp.get(row, col));
-            }
-            newIndexCol++;
-        }
-
-        return subMatrix;
+        beta = T.mul(v * (alpha - n + 1) / (v + 1));
+        return beta;
     }
 
     private double c(int nPar, Double alphaPar) {
@@ -312,28 +332,11 @@ public class BayesianScoring {
         return 1 / (Math.pow(2, alphaPar * nPar / 2) * Math.pow(Math.PI, nPar * (nPar - 1) / 4) * product);
     }
 
-    public DoubleMatrix getBeta() {
-        if (beta == null) {
-            calculateBeta();
-        }
-        return beta;
-    }
-
     public DoubleMatrix getBetaStar() {
         if (betaStar == null) {
             calculateBetaStar();
         }
         return betaStar;
-    }
-
-    private DoubleMatrix calculateBeta() {
-        DoubleMatrix T = DoubleMatrix.eye(network.size());
-
-        v = (double) (n + 1);
-        alpha = (double) n;
-
-        beta = T.mul(v * (alpha - n + 1) / (v + 1));
-        return beta;
     }
 
     private void calculateBetaStar() {

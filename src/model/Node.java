@@ -19,7 +19,7 @@ public class Node implements Comparable {
 
     public Node(String s, Network network) {
         name = s;
-        network = network;
+        this.network = network;
         parents = new TreeSet<>();
         children = new TreeSet<>();
     }

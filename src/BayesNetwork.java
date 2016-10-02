@@ -19,7 +19,7 @@ public class BayesNetwork {
     public static Network realNetwork;
     private static int numberOfVertices = 100;
     private static String format = "%03d";
-    private static int numberOfLinesToUse = 5000;
+    private static int numberOfLinesToUse = 10000;
 
     private static String dataFileName = "res/sample.0.data.csv";
     private static String structureFileName = "res/sample.0.structure";
@@ -30,9 +30,9 @@ public class BayesNetwork {
         realNetwork = new Network();
 
         importEmptyNetworkFromCSV(network, dataFileName);
-        addRandomDAGEdgesToEmptyNetwork(network, 0);
+        addRandomDAGEdgesToEmptyNetwork(network, 10);
         importNetworkFromCSV(realNetwork, dataFileName, structureFileName);
-        HillClimbing hillClimbing = new HillClimbing(network, realNetwork, numberOfLinesToUse);
+        HillClimbing hillClimbing = new HillClimbing(network, numberOfLinesToUse);
         hillClimbing.climbHill();
 
 //        network = new Network("myNetworkSuccess.txt");

@@ -1,7 +1,8 @@
 import evaluation.Evaluation;
 import model.Network;
 import model.Node;
-import search.HillClimbing;
+import search.LocalSearching;
+import search.SimulatedAnnealing;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -30,10 +31,10 @@ public class BayesNetwork {
         realNetwork = new Network();
 
         importEmptyNetworkFromCSV(network, dataFileName);
-        addRandomDAGEdgesToEmptyNetwork(network, 10);
+        addRandomDAGEdgesToEmptyNetwork(network, 0);
         importNetworkFromCSV(realNetwork, dataFileName, structureFileName);
-        HillClimbing hillClimbing = new HillClimbing(network, numberOfLinesToUse);
-        hillClimbing.climbHill();
+        LocalSearching localSearching = new SimulatedAnnealing(network, numberOfLinesToUse);
+        localSearching.doSearch();
 
 //        network = new Network("myNetworkSuccess.txt");
 //        importNetworkFromCSV(realNetwork, dataFileName, structureFileName);
@@ -73,7 +74,7 @@ public class BayesNetwork {
         }
 
         for (int i = 0; i < numberOfVertices; i++) {
-            String name = "GENE" + String.format(format, i);
+            String name = "Gene" + String.format(format, i);
             network.addNode(new Node(name, network));
         }
     }
@@ -87,7 +88,7 @@ public class BayesNetwork {
         }
 
         for (int i = 0; i < numberOfVertices; i++) {
-            String name = "GENE" + String.format(format, i);
+            String name = "Gene" + String.format(format, i);
             network.addNode(new Node(name, network));
         }
 
@@ -98,8 +99,8 @@ public class BayesNetwork {
             if (index1 != index2) {
                 int parentIndex = Math.min(index1, index2);
                 int childIndex = Math.max(index1, index2);
-                Node parent = getNodeWithName(network.getNodes(), "GENE" + String.format(format, parentIndex));
-                Node child = getNodeWithName(network.getNodes(), "GENE" + String.format(format, childIndex));
+                Node parent = getNodeWithName(network.getNodes(), "Gene" + String.format(format, parentIndex));
+                Node child = getNodeWithName(network.getNodes(), "Gene" + String.format(format, childIndex));
                 // if the edge was already in the network
                 if (child != null && parent != null && !containsEdge(network.getEdges(), parent, child)) {
                     network.addNewEdge(parent, child);
@@ -146,7 +147,6 @@ public class BayesNetwork {
     private static void importNetworkFromCSV(Network network, String nodesFileName, String edgesFileName) {
         importEmptyNetworkFromCSV(network, nodesFileName);
 
-        int numberOfLines = 0;
         try {
             Scanner scanner = new Scanner(new File(edgesFileName));
             while (scanner.hasNextLine()) {

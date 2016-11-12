@@ -19,7 +19,7 @@ public class BayesianScoring {
     private static BayesianScoring ourInstance = new BayesianScoring();
     private Move move;
     private Network network;
-    private String fileName = "res/sample.0.data.csv";
+    private String fileName;
     private Double v, alpha;
     private int n;
     private DoubleMatrix mean;
@@ -31,6 +31,7 @@ public class BayesianScoring {
     private DoubleMatrix betaStar;
     private DoubleMatrix mu;
     private int numberOfLinesToUse;
+    private double lambda = 0.2;
 
     private BayesianScoring() {
     }
@@ -42,12 +43,20 @@ public class BayesianScoring {
         return ourInstance;
     }
 
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
     public void setNetwork(Network network) {
         this.network = network;
     }
 
     public void setMove(Move move) {
         this.move = move;
+    }
+
+    public void setLambda(Double lambda) {
+        this.lambda = lambda;
     }
 
     public void initializeValues() {
@@ -71,7 +80,7 @@ public class BayesianScoring {
                 String line = scanner.nextLine();
                 values = line.split(",");
                 for (int i = 0; i < numberOfColumns; i++) {
-                    sumOfColumns[i] = Double.valueOf(values[i]);
+                    sumOfColumns[i] += Double.valueOf(values[i]);
                 }
                 dataLines++;
             }
@@ -148,7 +157,7 @@ public class BayesianScoring {
             network.reverseEdge(child, parent);
         }
 
-        // it has to be substraction because we calculate the logarithms of the scores
+        // it has to be subtraction because we calculate the logarithms of the scores
         score = scoreAfter - scoreBefore;
         return score;
     }
@@ -161,7 +170,7 @@ public class BayesianScoring {
         parents.add(child);
         Double numerator = empiricalProbability(parents);
 
-        return numerator - denominator;
+        return numerator - denominator - lambda * network.getEdges().size() * network.getEdges().size();
     }
 
     private Double empiricalProbability(Set<Node> nodes) {

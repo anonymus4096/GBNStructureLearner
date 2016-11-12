@@ -7,4 +7,6 @@ public enum MoveType {
     adding,
     deleting,
     reversing
+
+
 }

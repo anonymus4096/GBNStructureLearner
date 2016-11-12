@@ -2,7 +2,6 @@ package model;
 
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.regex.Pattern;
 
 import static utils.GraphFunctions.containsNodeWithName;
 import static utils.GraphFunctions.getNodeWithName;
@@ -91,44 +90,69 @@ public class Node implements Comparable {
         parents.add(n);
     }
 
+//    @Override
+//    public int compareTo(Object o) {
+//        Node n = (Node) o;
+//        int ID = 0, otherID = 0;
+//        boolean isGene = true;
+//
+//        if (Pattern.matches("(G|g)(E|e)(N|n)(E|e)[0-9]+", name)) {
+//            ID = Integer.parseInt(name.substring(4));
+//        } else {
+//            isGene = false;
+//        }
+//
+//        if (Pattern.matches("(G|g)(E|e)(N|n)(E|e)[0-9]+", n.getName())) {
+//            otherID = Integer.parseInt(n.getName().substring(4));
+//        } else {
+//            isGene = false;
+//        }
+//
+//
+//        if (isGene) {
+//            if (ID > otherID) {
+//                return 1;
+//            } else if (ID < otherID) {
+//                return -1;
+//            } else {
+//                return 0;
+//            }
+//        } else {
+//            if (getName().compareTo(n.getName()) > 0) {
+//                return 1;
+//            } else if (getName().compareTo(n.getName()) < 0) {
+//                return -1;
+//            } else {
+//                return 0;
+//            }
+//        }
+//    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Node node = (Node) o;
+
+        if (!name.equals(node.name)) return false;
+        return network.equals(node.network);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = name.hashCode();
+        result = 31 * result + network.hashCode();
+        return result;
+    }
+
     @Override
     public int compareTo(Object o) {
         Node n = (Node) o;
-        int ID = 0, otherID = 0;
-        boolean isGene = true;
-
-        if (Pattern.matches("(G|g)(E|e)(N|n)(E|e)[0-9]+", name)) {
-            ID = Integer.parseInt(name.substring(4));
-        } else {
-            isGene = false;
-        }
-
-        if (Pattern.matches("(G|g)(E|e)(N|n)(E|e)[0-9]+", n.getName())) {
-            otherID = Integer.parseInt(n.getName().substring(4));
-        } else {
-            isGene = false;
-        }
-
-
-        if (isGene) {
-            if (ID > otherID) {
-                return 1;
-            } else if (ID < otherID) {
-                return -1;
-            } else {
-                return 0;
-            }
-        } else {
-            if (getName().compareTo(n.getName()) > 0) {
-                return 1;
-            } else if (getName().compareTo(n.getName()) < 0) {
-                return -1;
-            } else {
-                return 0;
-            }
-        }
+        return getName().compareTo(n.getName());
     }
-
 
     public void removeParent(Node parent) {
         parents.remove(getNodeWithName(parents, parent.getName()));
@@ -136,5 +160,10 @@ public class Node implements Comparable {
 
     public void removeChild(Node child) {
         children.remove(getNodeWithName(children, child.getName()));
+    }
+
+    @Override
+    public String toString() {
+        return name;
     }
 }

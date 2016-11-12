@@ -16,20 +16,24 @@ import static utils.NameGenerator.generateRandomName;
  * Created by Benedek on 3/17/2016.
  */
 public class Network {
+    private final String id;
     private Set<Node> nodes;
     private Set<Edge> edges;
 
     public Network() {
+        id = UUID.randomUUID().toString();
         nodes = new TreeSet<>();
         edges = new TreeSet<>();
     }
 
     public Network(Set<Node> nodes) {
+        id = UUID.randomUUID().toString();
         this.nodes = nodes;
         this.edges = new TreeSet<>();
     }
 
     public Network(String fileName) {
+        id = UUID.randomUUID().toString();
         nodes = new TreeSet<>();
         edges = new TreeSet<>();
         loadNetworkFromFile(fileName);
@@ -92,7 +96,11 @@ public class Network {
         System.out.println();
         System.out.println("--------------------------------------------------------------------------------");
         for (Edge edge : edges) {
-            System.out.println(edge.getParent().getName() + " --> " + edge.getChild().getName());
+            if (edge.isDirected()) {
+                System.out.println(edge.getParent().getName() + " --> " + edge.getChild().getName());
+            } else {
+                System.out.println(edge.getParent().getName() + " --- " + edge.getChild().getName());
+            }
         }
         System.out.println();
     }
@@ -282,6 +290,17 @@ public class Network {
         deleteEdge(parent.getName(), child.getName());
     }
 
+    /**
+     * determines whether adding the edge with the given parameters would mess up the DAG property
+     *
+     * @param parent start of the edge
+     * @param child  end of the edge
+     * @return return true if it violates the DAG condition
+     */
+    public boolean violatesDAG(Node parent, Node child) {
+        return hasPath(child, parent);
+    }
+
     public void deleteEdge(String parentName, String childName) {
         if (!containsNodeWithName(nodes, parentName)) {
             throw new IllegalArgumentException("Parent does not exist with the name " + parentName + " when trying to delete the edge.");
@@ -298,17 +317,6 @@ public class Network {
         }
     }
 
-    /**
-     * determines whether adding the edge with the given parameters would mess up the DAG property
-     *
-     * @param parent start of the edge
-     * @param child  end of the edge
-     * @return return true if it violates the DAG condition
-     */
-    public boolean violatesDAG(Node parent, Node child) {
-        return hasPath(child, parent);
-    }
-
     private boolean hasPath(Node from, Node to) {
         for (Node n : from.getDescendants()) {
             if (Objects.equals(n.getName(), to.getName())) {
@@ -320,5 +328,21 @@ public class Network {
 
     public int size() {
         return getNodes().size();
+    }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Network network = (Network) o;
+
+        return id.equals(network.id);
+
     }
 }

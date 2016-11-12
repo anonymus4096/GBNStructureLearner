@@ -39,7 +39,16 @@ public class GraphFunctions {
 
     public static Edge getEdge(Set<Edge> edges, Node parent, Node child) {
         for (Edge e : edges) {
-            if (e.getChild() == child && e.getParent() == parent) {
+            if (e.getChild().equals(child) && e.getParent().equals(parent)) {
+                return e;
+            }
+        }
+        return null;
+    }
+
+    public static Edge getEdgeWithName(Set<Edge> edges, String parent, String child) {
+        for (Edge e : edges) {
+            if (e.getChild().getName().equals(child) && e.getParent().getName().equals(parent)) {
                 return e;
             }
         }

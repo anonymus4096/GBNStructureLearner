@@ -14,24 +14,21 @@ public class Move implements Comparable {
     private Network network;
     private MoveType type;
 
-    public Move(Network myNetwork, MoveType add) {
-        network = myNetwork;
-        this.type = add;
-    }
-
     Move(Network myNetwork, Edge edge, MoveType add) {
         network = myNetwork;
         this.edge = edge;
         this.type = add;
     }
 
-    /**
-     * setter function for the edge field
-     *
-     * @param edge the desired edge
-     */
-    public void setEdge(Edge edge) {
-        this.edge = edge;
+    public void setScoreToNull() {
+        this.score = null;
+    }
+
+    double getScore() {
+        if (score == null) {
+            score = calculateScore();
+        }
+        return score;
     }
 
     /**
@@ -44,24 +41,10 @@ public class Move implements Comparable {
         bayesianScoring.setMove(this);
         bayesianScoring.setNetwork(network);
 
+
         double calculatedScore = bayesianScoring.calculateScoreOfMove();
         score = calculatedScore;
         return calculatedScore;
-    }
-
-    Edge getEdge() {
-        return edge;
-    }
-
-    double getScore() {
-        if (score == null) {
-            score = calculateScore();
-        }
-        return score;
-    }
-
-    MoveType getType() {
-        return type;
     }
 
     @Override
@@ -85,6 +68,31 @@ public class Move implements Comparable {
         }
     }
 
+    Edge getEdge() {
+        return edge;
+    }
+
+    /**
+     * setter function for the edge field
+     *
+     * @param edge the desired edge
+     */
+    public void setEdge(Edge edge) {
+        this.edge = edge;
+    }
+
+    MoveType getType() {
+        return type;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = edge != null ? edge.hashCode() : 0;
+        result = 31 * result + (network != null ? network.hashCode() : 0);
+        result = 31 * result + (type != null ? type.hashCode() : 0);
+        return result;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -99,15 +107,9 @@ public class Move implements Comparable {
     }
 
     @Override
-    public int hashCode() {
-        int result = edge != null ? edge.hashCode() : 0;
-        result = 31 * result + (network != null ? network.hashCode() : 0);
-        result = 31 * result + (type != null ? type.hashCode() : 0);
-        return result;
-    }
-
-    @Override
     public String toString() {
         return edge.getParent().getName() + " --> " + edge.getChild().getName() + ", " + this.getType();
     }
+
+
 }

@@ -17,20 +17,22 @@ import static utils.GraphFunctions.containsEdge;
 public abstract class LocalSearching {
     protected Network network;
     protected Set<Move> possibleMoves;
-    protected int maxNumberOfParents = 5;
+    protected int maxNumberOfParents = 100;
     protected LinkedList<Move> lastMoves;
-    protected int maxSize = 2;
+    protected int maxSize = 50;
     protected BayesianScoring bayesianScoring;
-    protected int maxNumberOfSteps = 1000;
+    protected int maxNumberOfSteps = 100000;
     protected boolean firstStep = true;
 
-    public LocalSearching(Network network, int numberOfLinesToUse) {
+    public LocalSearching(Network network, int numberOfLinesToUse, String fileName, int numberOfSteps, Double lambda) {
         this.network = network;
         bayesianScoring = BayesianScoring.getInstance();
+        bayesianScoring.setFileName(fileName);
         bayesianScoring.setNumberOfLinesToUse(numberOfLinesToUse);
         bayesianScoring.initializeValues();
+        bayesianScoring.setLambda(lambda);
+        maxNumberOfSteps = numberOfSteps;
         possibleMoves = new HashSet<>();
-
     }
 
     public abstract void doSearch();
@@ -56,25 +58,6 @@ public abstract class LocalSearching {
                 }
             }
         }
-    }
-
-
-    /**
-     * finds all the possible edges, without messing up the DAG property
-     *
-     * @return set of edges
-     */
-    protected Set<Edge> calculatePossibleEdges() {
-        Set<Edge> possibleEdges = new HashSet<>();
-        for (Node parent : network.getNodes()) {
-            for (Node child : network.getNodes()) {
-                if (parent != child && child.getParents().size() < maxNumberOfParents &&
-                        !containsEdge(network.getEdges(), parent, child) && !network.violatesDAG(parent, child)) {
-                    possibleEdges.add(new Edge(network, parent, child));
-                }
-            }
-        }
-        return possibleEdges;
     }
 
     /**
@@ -108,22 +91,33 @@ public abstract class LocalSearching {
             moves.add(new Move(network, e, MoveType.deleting));
         }
 
-        for (Edge e : network.getEdges()) {
-            moves.add(new Move(network, e, MoveType.reversing));
+        // to dodge ConcurrentModificationExceptions
+        Set<Edge> tempEdges = new HashSet<>(network.getEdges());
+        for (Edge e : tempEdges) {
+            if (!network.reversingViolatesDAG(e.getParent(), e.getChild())) {
+                moves.add(new Move(network, e, MoveType.reversing));
+            }
         }
 
         return moves;
     }
 
-    protected boolean lastMovesContain(LinkedList<Move> lastMoves, Move m) {
-        if (lastMoves.contains(m)) return true;
-        if (lastMoves.contains(new Move(network, m.getEdge(), MoveType.deleting)) ||
-                lastMoves.contains(new Move(network, m.getEdge(), MoveType.adding)) ||
-                lastMoves.contains(new Move(network, m.getEdge().getReverse(), MoveType.reversing))) {
-            return true;
+    /**
+     * finds all the possible edges, without messing up the DAG property
+     *
+     * @return set of edges
+     */
+    protected Set<Edge> calculatePossibleEdges() {
+        Set<Edge> possibleEdges = new HashSet<>();
+        for (Node parent : network.getNodes()) {
+            for (Node child : network.getNodes()) {
+                if (parent != child && child.getParents().size() < maxNumberOfParents &&
+                        !containsEdge(network.getEdges(), parent, child) && !network.violatesDAG(parent, child)) {
+                    possibleEdges.add(new Edge(network, parent, child));
+                }
+            }
         }
-
-        return false;
+        return possibleEdges;
     }
 
     protected Move findBestMove(Set<Move> possibleMoves, Set<Move> movesToRecalculate) {
@@ -148,7 +142,7 @@ public abstract class LocalSearching {
                 if (bestNewMove == null) {
                     bestNewMove = m;
                 } else {
-                    if (m.calculateScore() > bestNewMove.getScore()) {
+                    if (m.getScore() > bestNewMove.getScore()) {
                         bestNewMove = m;
                     }
                 }
@@ -166,4 +160,197 @@ public abstract class LocalSearching {
         return bestMove;
     }
 
+    protected boolean lastMovesContain(LinkedList<Move> lastMoves, Move m) {
+        if (lastMoves.contains(m)) return true;
+        if (lastMoves.contains(new Move(network, m.getEdge(), MoveType.deleting)) ||
+                lastMoves.contains(new Move(network, m.getEdge(), MoveType.adding)) ||
+                lastMoves.contains(new Move(network, m.getEdge().getReverse(), MoveType.reversing))) {
+            return true;
+        }
+
+        return false;
+    }
+
+    protected void maintainingPossibleMoves(Move lastMove, Set<Move> possibleMoves, boolean needToRecalculate) {
+        Set<Move> newPossibleMoves = new HashSet<>();
+        if (lastMove.getType() == MoveType.adding) {
+            // deleting
+            possibleMoves.remove(lastMove);
+
+            Set<Node> descendants = lastMove.getEdge().getChild().getDescendants();
+            Set<Node> ancestors = lastMove.getEdge().getParent().getAncestors();
+            descendants.add(lastMove.getEdge().getChild());
+            ancestors.add(lastMove.getEdge().getParent());
+
+            for (Node parent : ancestors) {
+                for (Node child : descendants) {
+                    if (network.violatesDAG(child, parent)) {
+                        possibleMoves.remove(new Move(network, new Edge(network, child, parent), MoveType.adding));
+                    }
+                    if (network.reversingViolatesDAG(parent, child)) {
+                        possibleMoves.remove(new Move(network, new Edge(network, parent, child), MoveType.reversing));
+                    }
+                }
+            }
+
+            // adding
+            newPossibleMoves.add(new Move(network,
+                    new Edge(network, lastMove.getEdge().getParent(), lastMove.getEdge().getChild()),
+                    MoveType.deleting));
+            if (!network.reversingViolatesDAG(lastMove.getEdge().getParent(), lastMove.getEdge().getChild())) {
+                newPossibleMoves.add(new Move(network,
+                        new Edge(network, lastMove.getEdge().getParent(), lastMove.getEdge().getChild()),
+                        MoveType.reversing));
+            }
+            // finding moves to be calculated
+            for (Move move : possibleMoves) {
+                if (move.getType() == MoveType.reversing) {
+                    if (move.getEdge().getParent() == lastMove.getEdge().getChild()) {
+                        newPossibleMoves.add(move);
+                    }
+                } else {
+                    if (move.getEdge().getChild() == lastMove.getEdge().getChild()) {
+                        newPossibleMoves.add(move);
+                    }
+                }
+            }
+
+        } else if (lastMove.getType() == MoveType.deleting) {
+            // deleting
+            possibleMoves.remove(lastMove);
+            possibleMoves.remove(new Move(network, lastMove.getEdge(), MoveType.reversing));
+
+            // adding
+            Set<Node> descendants = lastMove.getEdge().getChild().getDescendants();
+            Set<Node> ancestors = lastMove.getEdge().getParent().getAncestors();
+            descendants.add(lastMove.getEdge().getChild());
+            ancestors.add(lastMove.getEdge().getParent());
+
+            for (Node parent : ancestors) {
+                for (Node child : descendants) {
+                    if (parent != child && !network.violatesDAG(child, parent)) {
+                        newPossibleMoves.add(new Move(network, new Edge(network, child, parent), MoveType.adding));
+                    }
+
+                    if (containsEdge(network.getEdges(), parent, child) && !network.reversingViolatesDAG(parent, child)) {
+                        newPossibleMoves.add(new Move(network, new Edge(network, parent, child), MoveType.reversing));
+                    }
+                }
+            }
+
+            newPossibleMoves.add(new Move(network, new Edge(network, lastMove.getEdge().getParent(), lastMove.getEdge().getChild()), MoveType.adding));
+
+            // finding moves to be calculated
+            for (Move move : possibleMoves) {
+                if (move.getType() == MoveType.reversing) {
+                    if (move.getEdge().getParent() == lastMove.getEdge().getChild()) {
+                        newPossibleMoves.add(move);
+                    }
+                } else {
+                    if (move.getEdge().getChild() == lastMove.getEdge().getChild()) {
+                        newPossibleMoves.add(move);
+                    }
+                }
+            }
+
+        } else {
+            // deleting
+            possibleMoves.remove(lastMove);
+            possibleMoves.remove(new Move(network, lastMove.getEdge(), MoveType.deleting));
+
+            // here the child and the parent roles are reversed
+            Set<Node> newDescendants = lastMove.getEdge().getParent().getDescendants();
+            Set<Node> newAncestors = lastMove.getEdge().getChild().getAncestors();
+            newDescendants.add(lastMove.getEdge().getParent());
+            newAncestors.add(lastMove.getEdge().getChild());
+
+            for (Node parent : newAncestors) {
+                for (Node child : newDescendants) {
+                    possibleMoves.remove(new Move(network, new Edge(network, child, parent), MoveType.adding));
+                    if (network.reversingViolatesDAG(parent, child)) {
+                        possibleMoves.remove(new Move(network, new Edge(network, parent, child), MoveType.reversing));
+                    }
+                }
+            }
+
+            // adding
+            newPossibleMoves.add(new Move(network, lastMove.getEdge().getReverse(), MoveType.deleting));
+
+            Set<Node> descendants = lastMove.getEdge().getChild().getDescendants();
+            Set<Node> ancestors = lastMove.getEdge().getParent().getAncestors();
+            descendants.add(lastMove.getEdge().getChild());
+            ancestors.add(lastMove.getEdge().getParent());
+
+            for (Node parent : ancestors) {
+                for (Node child : descendants) {
+                    if (parent != child && !containsEdge(network.getEdges(), child, parent) && !network.violatesDAG(child, parent)) {
+                        newPossibleMoves.add(new Move(network, new Edge(network, child, parent), MoveType.adding));
+                    }
+
+                    //if (containsEdge(network.getEdges(), child, parent) && !network.reversingViolatesDAG(child, parent)) {
+                    //    newPossibleMoves.add(new Move(network, new Edge(network, child, parent), MoveType.reversing));
+                    //}
+                    if (containsEdge(network.getEdges(), parent, child) && !network.reversingViolatesDAG(parent, child)) {
+                        newPossibleMoves.add(new Move(network, new Edge(network, parent, child), MoveType.reversing));
+                    }
+
+                }
+            }
+
+            Set<Edge> tempEdges = new HashSet<>(network.getEdges());
+            for (Edge edge : tempEdges) {
+                if (edge.getChild() == lastMove.getEdge().getChild()
+                        || edge.getParent() == lastMove.getEdge().getParent()) {
+                    if (!network.reversingViolatesDAG(edge.getParent(), edge.getChild())) {
+                        newPossibleMoves.add(new Move(network, edge, MoveType.reversing));
+                    }
+                }
+            }
+
+            // finding moves to be calculated
+            for (Move move : possibleMoves) {
+                if (move.getType() == MoveType.reversing) {
+                    if (move.getEdge().getParent() == lastMove.getEdge().getChild()
+                            || move.getEdge().getParent() == lastMove.getEdge().getParent()) {
+                        newPossibleMoves.add(move);
+                    }
+                } else {
+                    if (move.getEdge().getChild() == lastMove.getEdge().getChild()
+                            || move.getEdge().getChild() == lastMove.getEdge().getParent()) {
+                        newPossibleMoves.add(move);
+                    }
+                }
+            }
+
+        }
+
+        if (needToRecalculate) {
+            for (Move move : newPossibleMoves) {
+                move.setScoreToNull();
+            }
+            possibleMoves.removeAll(newPossibleMoves);
+            possibleMoves.addAll(newPossibleMoves);
+        } else {
+            possibleMoves.removeAll(newPossibleMoves);
+            possibleMoves.addAll(newPossibleMoves);
+        }
+    }
+
+    protected boolean moveWouldCauseMoreParents(Move nextMove, int maxNumberOfParents) {
+        switch (nextMove.getType()) {
+            case adding:
+                if (nextMove.getEdge().getChild().getParents().size() >= maxNumberOfParents) {
+                    return true;
+                }
+                break;
+            case reversing:
+                if (nextMove.getEdge().getParent().getParents().size() >= maxNumberOfParents) {
+                    return true;
+                }
+                break;
+            default:
+                return false;
+        }
+        return false;
+    }
 }

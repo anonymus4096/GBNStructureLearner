@@ -127,11 +127,44 @@ public class Evaluation {
 
 
     public void convertNetworkToPDag(Network network) {
+//        for (Edge e : network.getEdges()) {
+//            for (Edge e2 : network.getEdges()){
+//                if (!e.isDirected()) break;
+//                if (e == e2) continue;
+//
+//                if (e.getChild().getParents().size() == 1 ||
+//                        e.getChild() == e2.getChild() &&
+//                                (GraphFunctions.containsEdge(network.getEdges(), e.getParent(), e2.getParent()) || GraphFunctions.containsEdge(network.getEdges(), e2.getParent(), e.getParent()))) {
+//                    e.setDirected(false);
+//                    break;
+//                }
+//            }
+//        }
+
         for (Edge e : network.getEdges()) {
-            if (e.getChild().getParents().size() == 1) {
-                e.setDirected(false);
+            e.setDirected(false);
+        }
+
+        for (Node child : network.getNodes()) {
+            for (Node parent : child.getParents()) {
+                for (Node otherParent : child.getParents()) {
+                    if (parent == otherParent) {
+                        continue;
+                    }
+                    Edge e1 = GraphFunctions.getEdge(network.getEdges(), parent, child);
+                    Edge e2 = GraphFunctions.getEdge(network.getEdges(), otherParent, child);
+                    Edge parentEdge = GraphFunctions.getEdge(network.getEdges(), parent, otherParent);
+                    if (parentEdge == null)
+                        parentEdge = GraphFunctions.getEdge(network.getEdges(), otherParent, parent);
+                    if (parentEdge == null) {
+                        // there is no edge in any direction
+                        e1.setDirected(true);
+                        e2.setDirected(true);
+                    }
+                }
             }
         }
+
         boolean changed = true;
         while (changed) {
             changed = false;

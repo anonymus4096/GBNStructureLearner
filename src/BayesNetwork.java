@@ -8,7 +8,6 @@ import search.SimulatedAnnealing;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -114,7 +113,7 @@ public class BayesNetwork {
             }
 
             importNetworkFromCSV(realNetwork, dataFileName, structureFileName);
-            addRandomDAGEdgesToEmptyNetwork(network, 1000);
+            addRandomDAGEdgesToEmptyNetwork(network, 0);
 
             LocalSearching localSearching;
             switch (searchAlgorithmParam) {
@@ -138,15 +137,8 @@ public class BayesNetwork {
         evaluation.evaluate();
 
         realNetwork.saveNetworkToFile("realNetwork.txt");
-        String currentTime = String.valueOf(new Timestamp(System.currentTimeMillis()));
 
-        // sometimes the last digits are 0, and therefore omitted, so we have to supplement them
-        int lengthDifference = currentTime.length() - "yyyy-MM-dd HH:mm:ss.SSS".length();
-        for (int i = 0; i < lengthDifference; i++) {
-            currentTime += "0";
-        }
-
-        LocalDateTime datetime = LocalDateTime.parse(currentTime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS"));
+        LocalDateTime datetime = LocalDateTime.now();
         String timestamp = datetime.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
         network.saveNetworkToFile("myNetwork_" + timestamp + ".txt");
         System.out.println("myNetwork_" + timestamp + ".txt created.");

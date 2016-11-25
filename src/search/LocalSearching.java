@@ -17,7 +17,7 @@ import static utils.GraphFunctions.containsEdge;
 public abstract class LocalSearching {
     protected Network network;
     protected Set<Move> possibleMoves;
-    protected int maxNumberOfParents = 100;
+    protected int maxNumberOfParents = 10;
     protected LinkedList<Move> lastMoves;
     protected int maxSize = 50;
     protected BayesianScoring bayesianScoring;

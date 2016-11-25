@@ -188,7 +188,7 @@ public class BayesianScoring {
                 Math.pow((v / (v + M)), lw / 2) *
                 (c(lw, alphaw) / c(lw, alphaw + M)) *
                 (Math.pow(getDeterminant(betaW), alphaw / 2) / Math.pow(getDeterminant(betaStarW), (alphaw + M) / 2));*/
-        double ans = (M * lw / 2) * Math.log(1 / (2 * Math.PI)) +
+        Double ans = (M * lw / 2) * Math.log(1 / (2 * Math.PI)) +
                 (lw / 2) * Math.log(v / (v + M)) +
                 (logc(lw, alphaw) - logc(lw, alphaw + M)) +
                 ((alphaw / 2) * Math.log(getDeterminant(betaW)) - ((alphaw + M) / 2) * Math.log(getDeterminant(betaStarW)));

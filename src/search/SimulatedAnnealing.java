@@ -18,6 +18,8 @@ public class SimulatedAnnealing extends LocalSearching {
     Double Tmax = 10000.0;
     Double Tmin = 0.0;
     Random random = new Random();
+    int numberOfTries = 0;
+    int maxNumberOfTries = (int) Math.pow(network.getNodes().size(), 2.5);
     Set<Move> tempMoves = new HashSet<>();
 
     public SimulatedAnnealing(Network network, int numberOfLinesToUse, String fileName, int numberOfSteps, Double lambda) {
@@ -42,8 +44,9 @@ public class SimulatedAnnealing extends LocalSearching {
                 Tstep = (Tmax - Tmin) / (double) (maxNumberOfSteps - numberOfSteps);
                 System.out.println("The new max T is: " + Tmax);
             }
-            if (numberOfSteps % 100 == 0)
+            if (numberOfSteps % 100 == 0) {
                 System.out.println("We have completed " + numberOfSteps + " steps. There are " + (maxNumberOfSteps - numberOfSteps) + " steps left.");
+            }
 
             lastScore = stepOne(T);
             numberOfSteps++;
@@ -57,13 +60,18 @@ public class SimulatedAnnealing extends LocalSearching {
 
     private Double calculateIdealTemperature(Set<Move> possibleMoves) {
         double acc = 0;
+        int i = 0;
         for (Move move : possibleMoves) {
+            if (i == 1000) break;
+
             move.setScoreToNull();
-            if (move.getScore() < 0) {
+            if (move.getScore() < 0
+                    && !Double.isInfinite(move.getScore())) {
+                i++;
                 acc += Math.pow(move.getScore(), 2);
             }
         }
-        acc /= possibleMoves.size();
+        acc /= Math.min(possibleMoves.size(), i);
         acc = Math.sqrt(acc);
 
         return acc;
@@ -135,8 +143,7 @@ public class SimulatedAnnealing extends LocalSearching {
 
     protected Double stepOne(Double T) {
         Move nextMove;
-        int numberOfTries = 0;
-        while (numberOfTries < Math.pow(network.getNodes().size(), 2)) {
+        while (numberOfTries < maxNumberOfTries) {
             nextMove = getRandomMove();
 
             nextMove.setScoreToNull();

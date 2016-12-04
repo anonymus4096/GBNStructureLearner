@@ -9,15 +9,17 @@ import model.Network;
  * Moves can be the following: type, deleting and reversing an edge
  */
 public class Move implements Comparable {
+    private final Double lambda;
     private Edge edge = null;
     private Double score = null;
     private Network network;
     private MoveType type;
 
-    Move(Network myNetwork, Edge edge, MoveType add) {
+    Move(Network myNetwork, Edge edge, MoveType add, Double lambda) {
         network = myNetwork;
         this.edge = edge;
         this.type = add;
+        this.lambda = lambda;
     }
 
     public void setScoreToNull() {
@@ -28,7 +30,13 @@ public class Move implements Comparable {
         if (score == null) {
             score = calculateScore();
         }
-        return score;
+        Double regularization = 0.0;
+        if (type == MoveType.adding) {
+            regularization = lambda * (Math.pow(network.getEdges().size() + 1, 2) - Math.pow(network.getEdges().size(), 2));
+        } else if (type == MoveType.deleting) {
+            regularization = lambda * (Math.pow(network.getEdges().size() - 1, 2) - Math.pow(network.getEdges().size(), 2));
+        }
+        return score - regularization;
     }
 
     /**

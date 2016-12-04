@@ -170,7 +170,7 @@ public class BayesianScoring {
         parents.add(child);
         Double numerator = empiricalProbability(parents);
 
-        return numerator - denominator - lambda * network.getEdges().size() * network.getEdges().size();
+        return numerator - denominator;
     }
 
     private Double empiricalProbability(Set<Node> nodes) {

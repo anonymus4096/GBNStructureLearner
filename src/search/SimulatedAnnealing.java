@@ -6,10 +6,7 @@ import model.Node;
 import utils.GraphFunctions;
 
 import java.time.LocalTime;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by bfabian on 2016. 10. 02..
@@ -19,7 +16,7 @@ public class SimulatedAnnealing extends LocalSearching {
     Double Tmin = 0.0;
     Random random = new Random();
     int numberOfTries = 0;
-    int maxNumberOfTries = (int) Math.pow(network.getNodes().size(), 2.5);
+    int maxNumberOfTries = (int) Math.pow(network.getNodes().size(), 2);
     Set<Move> tempMoves = new HashSet<>();
 
     public SimulatedAnnealing(Network network, int numberOfLinesToUse, String fileName, int numberOfSteps, Double lambda) {
@@ -55,11 +52,14 @@ public class SimulatedAnnealing extends LocalSearching {
 
         long elapsedTime = System.nanoTime() - startTime;
         System.out.println("The algorithm took " + elapsedTime / 1000000000.0 + " seconds to finish, while making " + numberOfSteps + " steps.");
-
     }
 
     private Double calculateIdealTemperature(Set<Move> possibleMoves) {
-        double acc = 0;
+        List<Double> scores = new ArrayList<>();
+
+        Double probAcceptance = 0.5;
+        Double percentile = 0.99;
+
         int i = 0;
         for (Move move : possibleMoves) {
             if (i == 1000) break;
@@ -68,78 +68,15 @@ public class SimulatedAnnealing extends LocalSearching {
             if (move.getScore() < 0
                     && !Double.isInfinite(move.getScore())) {
                 i++;
-                acc += Math.pow(move.getScore(), 2);
+                scores.add(Math.abs(move.getScore()));
             }
         }
-        acc /= Math.min(possibleMoves.size(), i);
-        acc = Math.sqrt(acc);
+        Collections.sort(scores);
+        Double threshold = scores.get((int) (scores.size() * percentile));
 
-        return acc;
+
+        return -1 * threshold / Math.log(probAcceptance);
     }
-
-/*    protected Double stepOne(Double T) {
-        if (possibleMoves == null || possibleMoves.size() == 0) {
-            possibleMoves = calculatePossibleMoves();
-        } else {
-            maintainingPossibleMoves(lastMoves.getLast(), possibleMoves, false);
-
-//            Set<Move> temp1 = calculatePossibleMoves();
-//            Set<Move> temp3 = new HashSet<>(temp1);
-//            temp1.removeAll(possibleMoves);
-//            Set<Move> temp2 = new HashSet<>(possibleMoves);
-//            temp2.removeAll(temp3);
-//            System.out.println("Should have found: " + temp1);
-//            System.out.println("Shouldn't have found: " + temp2);
-        }
-        if (possibleMoves.size() == 0) {
-            return null;
-        }
-
-        Move nextMove;
-        int size = possibleMoves.size();
-
-        for (int i = 0; i < size; i++) {
-
-            nextMove = getRandomElementFromSet(possibleMoves);
-
-            if (nextMove == null) {
-                return 0.0;
-            }
-            Double prob = Math.exp(nextMove.calculateScore() / T);
-
-            if ((nextMove.getScore() > 0 ||
-                    (nextMove.getScore() < 0 &&
-                            random.nextDouble() < prob))
-                    && !moveWouldCauseMoreParents(nextMove, maxNumberOfParents)){
-                // if the FIFO is full, delete the first element
-                if (lastMoves.size() == maxSize) {
-                    lastMoves.remove();
-                }
-                // then append the last move to the end of the queue
-                lastMoves.add(nextMove);
-
-                makeMove(nextMove);
-                if (nextMove.getType() == MoveType.adding) {
-                    System.out.println(LocalTime.now() + ": Added edge: " + nextMove.getEdge().getParent().getName() + " --> " + nextMove.getEdge().getChild().getName() + " : \t" + nextMove.getScore());
-                } else if (nextMove.getType() == MoveType.deleting) {
-                    System.out.println(LocalTime.now() + ": Deleting edge: " + nextMove.getEdge().getParent().getName() + " --> " + nextMove.getEdge().getChild().getName() + " : \t" + nextMove.getScore());
-                } else {
-                    System.out.println(LocalTime.now() + ": Reversing edge: " + nextMove.getEdge().getParent().getName() + " --> " + nextMove.getEdge().getChild().getName() + " : \t" + nextMove.getScore());
-                }
-
-                //System.out.println(network.isDAG());
-
-                possibleMoves.addAll(tempMoves);
-                tempMoves.clear();
-                return nextMove.getScore();
-            } else{
-                tempMoves.add(nextMove);
-                possibleMoves.remove(nextMove);
-            }
-        }
-        return null;
-    }
-*/
 
     protected Double stepOne(Double T) {
         Move nextMove;
@@ -185,15 +122,15 @@ public class SimulatedAnnealing extends LocalSearching {
 
             if (GraphFunctions.containsEdge(network.getEdges(), parent, child)) {
                 if (random.nextDouble() > 0.5) {
-                    move = new Move(network, new Edge(network, parent, child), MoveType.deleting);
+                    move = new Move(network, new Edge(network, parent, child), MoveType.deleting, lambda);
                 } else {
                     if (parent.getParents().size() < maxNumberOfParents && !network.reversingViolatesDAG(parent, child)) {
-                        move = new Move(network, new Edge(network, parent, child), MoveType.reversing);
+                        move = new Move(network, new Edge(network, parent, child), MoveType.reversing, lambda);
                     }
                 }
             } else {
                 if (child.getParents().size() < maxNumberOfParents && !network.violatesDAG(parent, child)) {
-                    move = new Move(network, new Edge(network, parent, child), MoveType.adding);
+                    move = new Move(network, new Edge(network, parent, child), MoveType.adding, lambda);
                 }
             }
 

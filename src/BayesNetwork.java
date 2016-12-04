@@ -5,6 +5,7 @@ import org.apache.commons.cli.*;
 import search.HillClimbing;
 import search.LocalSearching;
 import search.SimulatedAnnealing;
+import utils.GraphFunctions;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -20,6 +21,7 @@ public class BayesNetwork {
     public static Network realNetwork;
     private static int numberOfVertices = 100;
     private static int numberOfLinesToUse = 10000;
+    private static int numberOfRandomEdges = 0;
 
     private static String dataFileName;
     private static String structureFileName;
@@ -40,7 +42,9 @@ public class BayesNetwork {
                 .addOption("ns", "number-of-steps", true, "specify the number of steps the search algorithm should make")
                 .addOption("ld", "load-from-file", true, "if you wish to load the network you saved previously, specify the file")
                 .addOption("e", "evaluation-only", false, "if you only wish to evaluate the network")
-                .addOption("lb", "lambda", true, "specify how strong the regularization should be (default=0.2)");
+                .addOption("lb", "lambda", true, "specify how strong the regularization should be (default=0.2)")
+                .addOption("re", "random-edges", true, "specify how many random edges should the graph contain")
+                .addOption("dr", "data-rows", true, "specify the first how many rows should be used for searching");
 
         String searchAlgorithmParam = "";
         Integer numberOfSteps = 10000;
@@ -74,6 +78,15 @@ public class BayesNetwork {
             if (line.hasOption("lb")) {
                 lambda = Double.parseDouble(line.getOptionValue("lb"));
             }
+
+            if (line.hasOption("re")) {
+                numberOfRandomEdges = Integer.valueOf(line.getOptionValue("re"));
+            }
+
+            if (line.hasOption("dr")) {
+                numberOfLinesToUse = Integer.valueOf(line.getOptionValue("dr"));
+            }
+
 
         } catch (ParseException exp) {
             System.out.println("ParseException: " + exp.getMessage());
@@ -113,7 +126,7 @@ public class BayesNetwork {
             }
 
             importNetworkFromCSV(realNetwork, dataFileName, structureFileName);
-            addRandomDAGEdgesToEmptyNetwork(network, 0);
+            addRandomDAGEdgesToEmptyNetwork(network, numberOfRandomEdges);
 
             LocalSearching localSearching;
             switch (searchAlgorithmParam) {
@@ -129,6 +142,11 @@ public class BayesNetwork {
                     break;
             }
             localSearching.doSearch();
+
+            LocalDateTime datetime = LocalDateTime.now();
+            String timestamp = datetime.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
+            network.saveNetworkToFile("myNetwork_" + timestamp + ".txt");
+            System.out.println("myNetwork_" + timestamp + ".txt created.");
         }
 
         Evaluation evaluation = new Evaluation(realNetwork, network);
@@ -136,14 +154,9 @@ public class BayesNetwork {
         evaluation.convertNetworkToPDag(realNetwork);
         evaluation.evaluate();
 
-        realNetwork.saveNetworkToFile("realNetwork.txt");
 
-        LocalDateTime datetime = LocalDateTime.now();
-        String timestamp = datetime.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
-        network.saveNetworkToFile("myNetwork_" + timestamp + ".txt");
-        System.out.println("myNetwork_" + timestamp + ".txt created.");
-        realNetwork.printNetwork();
-        network.printNetwork();
+        //realNetwork.printNetwork();
+        //network.printNetwork();
     }
 
     private static void importNetworkFromCSV(Network network, String nodesFileName, String edgesFileName) {
@@ -190,7 +203,7 @@ public class BayesNetwork {
         for (int i = 0; i < numberOfEdges; i++) {
             Node parent = nodes.get(random.nextInt(nodes.size()));
             Node child = nodes.get(random.nextInt(nodes.size()));
-            if (parent != child && !network.violatesDAG(parent, child)) {
+            if (parent != child && !GraphFunctions.containsEdge(network.getEdges(), parent, child) && !network.violatesDAG(parent, child)) {
                 network.addNewEdge(parent, child);
             } else {
                 i--;

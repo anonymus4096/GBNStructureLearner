@@ -133,7 +133,6 @@ public class Network {
             for (Node n : potentialNext) {
                 if (!next.contains(n) && result.containsAll(n.getParents())) {
                     next.add(n);
-                    start.remove(n.getName());
                 }
             }
         }

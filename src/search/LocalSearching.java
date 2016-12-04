@@ -19,13 +19,15 @@ public abstract class LocalSearching {
     protected Set<Move> possibleMoves;
     protected int maxNumberOfParents = 10;
     protected LinkedList<Move> lastMoves;
-    protected int maxSize = 50;
+    protected int maxSize = 3;
     protected BayesianScoring bayesianScoring;
     protected int maxNumberOfSteps = 100000;
     protected boolean firstStep = true;
+    protected Double lambda = 0.2;
 
     public LocalSearching(Network network, int numberOfLinesToUse, String fileName, int numberOfSteps, Double lambda) {
         this.network = network;
+        this.lambda = lambda;
         bayesianScoring = BayesianScoring.getInstance();
         bayesianScoring.setFileName(fileName);
         bayesianScoring.setNumberOfLinesToUse(numberOfLinesToUse);
@@ -85,17 +87,17 @@ public abstract class LocalSearching {
 
         Set<Edge> possibleEdges = calculatePossibleEdges();
         for (Edge e : possibleEdges) {
-            moves.add(new Move(network, e, MoveType.adding));
+            moves.add(new Move(network, e, MoveType.adding, lambda));
         }
         for (Edge e : network.getEdges()) {
-            moves.add(new Move(network, e, MoveType.deleting));
+            moves.add(new Move(network, e, MoveType.deleting, lambda));
         }
 
         // to dodge ConcurrentModificationExceptions
         Set<Edge> tempEdges = new HashSet<>(network.getEdges());
         for (Edge e : tempEdges) {
             if (!network.reversingViolatesDAG(e.getParent(), e.getChild())) {
-                moves.add(new Move(network, e, MoveType.reversing));
+                moves.add(new Move(network, e, MoveType.reversing, lambda));
             }
         }
 
@@ -162,9 +164,9 @@ public abstract class LocalSearching {
 
     protected boolean lastMovesContain(LinkedList<Move> lastMoves, Move m) {
         if (lastMoves.contains(m)) return true;
-        if (lastMoves.contains(new Move(network, m.getEdge(), MoveType.deleting)) ||
-                lastMoves.contains(new Move(network, m.getEdge(), MoveType.adding)) ||
-                lastMoves.contains(new Move(network, m.getEdge().getReverse(), MoveType.reversing))) {
+        if (lastMoves.contains(new Move(network, m.getEdge(), MoveType.deleting, lambda)) ||
+                lastMoves.contains(new Move(network, m.getEdge(), MoveType.adding, lambda)) ||
+                lastMoves.contains(new Move(network, m.getEdge().getReverse(), MoveType.reversing, lambda))) {
             return true;
         }
 
@@ -185,10 +187,10 @@ public abstract class LocalSearching {
             for (Node parent : ancestors) {
                 for (Node child : descendants) {
                     if (network.violatesDAG(child, parent)) {
-                        possibleMoves.remove(new Move(network, new Edge(network, child, parent), MoveType.adding));
+                        possibleMoves.remove(new Move(network, new Edge(network, child, parent), MoveType.adding, lambda));
                     }
                     if (network.reversingViolatesDAG(parent, child)) {
-                        possibleMoves.remove(new Move(network, new Edge(network, parent, child), MoveType.reversing));
+                        possibleMoves.remove(new Move(network, new Edge(network, parent, child), MoveType.reversing, lambda));
                     }
                 }
             }
@@ -196,11 +198,11 @@ public abstract class LocalSearching {
             // adding
             newPossibleMoves.add(new Move(network,
                     new Edge(network, lastMove.getEdge().getParent(), lastMove.getEdge().getChild()),
-                    MoveType.deleting));
+                    MoveType.deleting, lambda));
             if (!network.reversingViolatesDAG(lastMove.getEdge().getParent(), lastMove.getEdge().getChild())) {
                 newPossibleMoves.add(new Move(network,
                         new Edge(network, lastMove.getEdge().getParent(), lastMove.getEdge().getChild()),
-                        MoveType.reversing));
+                        MoveType.reversing, lambda));
             }
             // finding moves to be calculated
             for (Move move : possibleMoves) {
@@ -218,7 +220,7 @@ public abstract class LocalSearching {
         } else if (lastMove.getType() == MoveType.deleting) {
             // deleting
             possibleMoves.remove(lastMove);
-            possibleMoves.remove(new Move(network, lastMove.getEdge(), MoveType.reversing));
+            possibleMoves.remove(new Move(network, lastMove.getEdge(), MoveType.reversing, lambda));
 
             // adding
             Set<Node> descendants = lastMove.getEdge().getChild().getDescendants();
@@ -229,16 +231,16 @@ public abstract class LocalSearching {
             for (Node parent : ancestors) {
                 for (Node child : descendants) {
                     if (parent != child && !network.violatesDAG(child, parent)) {
-                        newPossibleMoves.add(new Move(network, new Edge(network, child, parent), MoveType.adding));
+                        newPossibleMoves.add(new Move(network, new Edge(network, child, parent), MoveType.adding, lambda));
                     }
 
                     if (containsEdge(network.getEdges(), parent, child) && !network.reversingViolatesDAG(parent, child)) {
-                        newPossibleMoves.add(new Move(network, new Edge(network, parent, child), MoveType.reversing));
+                        newPossibleMoves.add(new Move(network, new Edge(network, parent, child), MoveType.reversing, lambda));
                     }
                 }
             }
 
-            newPossibleMoves.add(new Move(network, new Edge(network, lastMove.getEdge().getParent(), lastMove.getEdge().getChild()), MoveType.adding));
+            newPossibleMoves.add(new Move(network, new Edge(network, lastMove.getEdge().getParent(), lastMove.getEdge().getChild()), MoveType.adding, lambda));
 
             // finding moves to be calculated
             for (Move move : possibleMoves) {
@@ -256,7 +258,7 @@ public abstract class LocalSearching {
         } else {
             // deleting
             possibleMoves.remove(lastMove);
-            possibleMoves.remove(new Move(network, lastMove.getEdge(), MoveType.deleting));
+            possibleMoves.remove(new Move(network, lastMove.getEdge(), MoveType.deleting, lambda));
 
             // here the child and the parent roles are reversed
             Set<Node> newDescendants = lastMove.getEdge().getParent().getDescendants();
@@ -266,15 +268,15 @@ public abstract class LocalSearching {
 
             for (Node parent : newAncestors) {
                 for (Node child : newDescendants) {
-                    possibleMoves.remove(new Move(network, new Edge(network, child, parent), MoveType.adding));
+                    possibleMoves.remove(new Move(network, new Edge(network, child, parent), MoveType.adding, lambda));
                     if (network.reversingViolatesDAG(parent, child)) {
-                        possibleMoves.remove(new Move(network, new Edge(network, parent, child), MoveType.reversing));
+                        possibleMoves.remove(new Move(network, new Edge(network, parent, child), MoveType.reversing, lambda));
                     }
                 }
             }
 
             // adding
-            newPossibleMoves.add(new Move(network, lastMove.getEdge().getReverse(), MoveType.deleting));
+            newPossibleMoves.add(new Move(network, lastMove.getEdge().getReverse(), MoveType.deleting, lambda));
 
             Set<Node> descendants = lastMove.getEdge().getChild().getDescendants();
             Set<Node> ancestors = lastMove.getEdge().getParent().getAncestors();
@@ -284,14 +286,14 @@ public abstract class LocalSearching {
             for (Node parent : ancestors) {
                 for (Node child : descendants) {
                     if (parent != child && !containsEdge(network.getEdges(), child, parent) && !network.violatesDAG(child, parent)) {
-                        newPossibleMoves.add(new Move(network, new Edge(network, child, parent), MoveType.adding));
+                        newPossibleMoves.add(new Move(network, new Edge(network, child, parent), MoveType.adding, lambda));
                     }
 
                     //if (containsEdge(network.getEdges(), child, parent) && !network.reversingViolatesDAG(child, parent)) {
-                    //    newPossibleMoves.add(new Move(network, new Edge(network, child, parent), MoveType.reversing));
+                    //    newPossibleMoves.add(new Move(network, new Edge(network, child, parent), MoveType.reversing, lambda));
                     //}
                     if (containsEdge(network.getEdges(), parent, child) && !network.reversingViolatesDAG(parent, child)) {
-                        newPossibleMoves.add(new Move(network, new Edge(network, parent, child), MoveType.reversing));
+                        newPossibleMoves.add(new Move(network, new Edge(network, parent, child), MoveType.reversing, lambda));
                     }
 
                 }
@@ -302,7 +304,7 @@ public abstract class LocalSearching {
                 if (edge.getChild() == lastMove.getEdge().getChild()
                         || edge.getParent() == lastMove.getEdge().getParent()) {
                     if (!network.reversingViolatesDAG(edge.getParent(), edge.getChild())) {
-                        newPossibleMoves.add(new Move(network, edge, MoveType.reversing));
+                        newPossibleMoves.add(new Move(network, edge, MoveType.reversing, lambda));
                     }
                 }
             }
@@ -352,5 +354,9 @@ public abstract class LocalSearching {
                 return false;
         }
         return false;
+    }
+
+    public Double getLambda() {
+        return lambda;
     }
 }

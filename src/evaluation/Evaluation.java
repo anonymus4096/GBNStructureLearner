@@ -44,29 +44,10 @@ public class Evaluation {
     }
 
     public void evaluate() {
-        Set<Edge> truePosEdges = new TreeSet<>();
-        Set<Edge> falsePosEdges = new TreeSet<>();
-        Set<Edge> falseNegEdges = new TreeSet<>();
+        Map<Edge, Double> StrictTP = new HashMap<>();
+        Map<Edge, Double> PDAGTP = new HashMap<>();
+        Map<Edge, Double> StructureTP = new HashMap<>();
 
-        for (Edge edge : foundEdges) {
-            if (setOfPDAGEdgesContainsEdge(edge, realEdges)) {
-                truePosEdges.add(edge);
-            } else {
-                falsePosEdges.add(edge);
-            }
-        }
-
-        for (Edge edge : realEdges) {
-            if (edge.isDirected()) {
-                if (!foundEdges.contains(edge)) falseNegEdges.add(edge);
-            } else {
-                if (!foundEdges.contains(edge) && !foundEdges.contains(edge.getReverse())) falseNegEdges.add(edge);
-            }
-        }
-
-        System.out.println("True positives:\t" + truePosEdges.size());
-        System.out.println("False positives:\t" + falsePosEdges.size());
-        System.out.println("False negatives:\t" + falseNegEdges.size());
 
         Map<Edge, Double> unsortedEdges = new HashMap<>();
         for (Edge e : realEdges) {
@@ -76,48 +57,87 @@ public class Evaluation {
         sortedEdges.putAll(unsortedEdges);
 
         for (Map.Entry e : sortedEdges.entrySet()) {
-
-            String isDiscovered = "not found";
             Edge edge = (Edge) e.getKey();
-            if (foundEdges.contains(edge) || (!edge.isDirected() && foundEdges.contains(edge.getReverse()))) {
-                isDiscovered = "found";
-            } else if (foundEdges.contains(edge.getReverse())) {
-                isDiscovered = "reversed";
-            }
-
             String realStatus;
             String foundStatus;
 
-
             if (realEdges.contains(edge) && edge.isDirected()) {
-                realStatus = "-->";
+                realStatus = "1";
             } else if (realEdges.contains(edge) && !edge.isDirected()) {
-                realStatus = "---";
+                realStatus = "0";
             } else if (realEdges.contains(edge.getReverse()) && edge.isDirected()) {
-                realStatus = "<--";
+                realStatus = "-1";
             } else if (realEdges.contains(edge.getReverse()) && !edge.isDirected()) {
-                realStatus = "---";
+                realStatus = "0";
             } else {
-                realStatus = "-X-";
+                realStatus = "-5";
             }
 
             Edge foundEdge = GraphFunctions.getEdgeWithName(foundEdges, edge.getParent().getName(), edge.getChild().getName());
             Edge reverseFoundEdge = GraphFunctions.getEdgeWithName(foundEdges, edge.getChild().getName(), edge.getParent().getName());
             if (foundEdge != null && foundEdge.isDirected()) {
-                foundStatus = "-->";
+                foundStatus = "1";
             } else if (foundEdge != null && !foundEdge.isDirected()) {
-                foundStatus = "---";
+                foundStatus = "0";
             } else if (reverseFoundEdge != null && reverseFoundEdge.isDirected()) {
-                foundStatus = "<--";
+                foundStatus = "-1";
             } else if (reverseFoundEdge != null && !reverseFoundEdge.isDirected()) {
-                foundStatus = "---";
+                foundStatus = "0";
             } else {
-                foundStatus = "-X-";
+                foundStatus = "-5";
+            }
+
+            if (Objects.equals(realStatus, foundStatus)) {
+                StrictTP.put((Edge) e.getKey(), (Double) e.getValue());
+            }
+            if (!(Objects.equals(foundStatus, "-5") ||
+                    (Objects.equals(foundStatus, "-1") && Objects.equals(realStatus, "1")))) {
+                PDAGTP.put((Edge) e.getKey(), (Double) e.getValue());
+            }
+            if (!Objects.equals(foundStatus, "-5")) {
+                StructureTP.put((Edge) e.getKey(), (Double) e.getValue());
             }
 
             System.out.println(e.getKey() + "\t" + realStatus + "\t" + foundStatus);
         }
 
+        System.out.println("TP:\t" + StrictTP.size() + "\t" + PDAGTP.size() + "\t" + StructureTP.size());
+        System.out.println("FP:\t" + (foundEdges.size() - StrictTP.size()) + "\t" + (foundEdges.size() - PDAGTP.size()) + "\t" + (foundEdges.size() - StructureTP.size()));
+        System.out.println("FN:\t" + (realEdges.size() - StrictTP.size()) + "\t" + (realEdges.size() - PDAGTP.size()) + "\t" + (realEdges.size() - StructureTP.size()));
+
+        double strictSens = (double) StrictTP.size() / realEdges.size();
+        double pdagSens = (double) PDAGTP.size() / realEdges.size();
+        double structureSens = (double) StructureTP.size() / realEdges.size();
+        double strictPrec = (double) StrictTP.size() / foundEdges.size();
+        double pdagPrec = (double) PDAGTP.size() / foundEdges.size();
+        double structurePrec = (double) StructureTP.size() / foundEdges.size();
+
+        System.out.println("Sensitivity:\t" + strictSens + "\t" + pdagSens + "\t" + structureSens);
+        System.out.println("Precision:\t" + strictPrec + "\t" + pdagPrec + "\t" + structurePrec);
+        System.out.println("F1:\t" +
+                2 * strictPrec * strictSens / (strictPrec + strictSens) + "\t" +
+                2 * pdagPrec * pdagSens / (pdagPrec + pdagSens) + "\t" +
+                2 * structurePrec * structureSens / (structurePrec + structureSens));
+
+        double strictTPSum = 0;
+        double pdagTPSum = 0;
+        double structureTPSum = 0;
+        double sum = 0;
+
+        for (Map.Entry e : StrictTP.entrySet()) {
+            strictTPSum += Math.abs((double) e.getValue());
+        }
+        for (Map.Entry e : PDAGTP.entrySet()) {
+            pdagTPSum += Math.abs((double) e.getValue());
+        }
+        for (Map.Entry e : StructureTP.entrySet()) {
+            structureTPSum += Math.abs((double) e.getValue());
+        }
+        for (Map.Entry e : sortedEdges.entrySet()) {
+            sum += Math.abs((double) e.getValue());
+        }
+
+        System.out.println("Weighted Sensitivity:\t" + strictTPSum / sum + "\t" + pdagTPSum / sum + "\t" + structureTPSum / sum);
     }
 
     public boolean setOfPDAGEdgesContainsEdge(Edge edge, Set<Edge> edges) {
@@ -127,20 +147,6 @@ public class Evaluation {
 
 
     public void convertNetworkToPDag(Network network) {
-//        for (Edge e : network.getEdges()) {
-//            for (Edge e2 : network.getEdges()){
-//                if (!e.isDirected()) break;
-//                if (e == e2) continue;
-//
-//                if (e.getChild().getParents().size() == 1 ||
-//                        e.getChild() == e2.getChild() &&
-//                                (GraphFunctions.containsEdge(network.getEdges(), e.getParent(), e2.getParent()) || GraphFunctions.containsEdge(network.getEdges(), e2.getParent(), e.getParent()))) {
-//                    e.setDirected(false);
-//                    break;
-//                }
-//            }
-//        }
-
         for (Edge e : network.getEdges()) {
             e.setDirected(false);
         }
@@ -203,14 +209,7 @@ public class Evaluation {
         public int compare(Object keyA, Object keyB) {
             Double valueA = (Double) map.get(keyA);
             Double valueB = (Double) map.get(keyB);
-            if (Math.abs(valueB) > Math.abs(valueA)) {
-                return 1;
-            } else if (Math.abs(valueB) == Math.abs(valueA)) {
-                return 0;
-            } else {
-                return -1;
-            }
-
+            return Double.compare(Math.abs(valueB), Math.abs(valueA));
         }
     }
 }

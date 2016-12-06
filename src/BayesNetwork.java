@@ -20,14 +20,14 @@ public class BayesNetwork {
     public static Network network;
     public static Network realNetwork;
     private static int numberOfVertices = 100;
-    private static int numberOfLinesToUse = 10000;
+    private static int numberOfLinesToUse = 1000000;
     private static int numberOfRandomEdges = 0;
 
     private static String dataFileName;
     private static String structureFileName;
     private static String savedNetworkFileName = null;
     private static boolean evalOnly = false;
-    private static double lambda = 0.2;
+    private static double lambda = 0;
 
 
     public static void main(String[] args) {
@@ -37,12 +37,12 @@ public class BayesNetwork {
         CommandLineParser parser = new DefaultParser();
         Options options = new Options()
                 .addOption("sa", "search-algorithm", true, "choose searching algorithm")
-                .addOption("d", "data-filename", true, "specify file containing data")
-                .addOption("st", "structure-filename", true, "specify file containing network structure")
+                .addOption("df", "data-filename", true, "specify file containing data")
+                .addOption("sf", "structure-filename", true, "specify file containing network structure")
                 .addOption("ns", "number-of-steps", true, "specify the number of steps the search algorithm should make")
                 .addOption("ld", "load-from-file", true, "if you wish to load the network you saved previously, specify the file")
-                .addOption("e", "evaluation-only", false, "if you only wish to evaluate the network")
-                .addOption("lb", "lambda", true, "specify how strong the regularization should be (default=0.2)")
+                .addOption("eo", "evaluation-only", false, "if you only wish to evaluate the network")
+                .addOption("lb", "lambda", true, "specify how strong the regularization should be (default=0)")
                 .addOption("re", "random-edges", true, "specify how many random edges should the graph contain")
                 .addOption("dr", "data-rows", true, "specify the first how many rows should be used for searching");
 
@@ -54,11 +54,11 @@ public class BayesNetwork {
             if (line.hasOption("sa")) {
                 searchAlgorithmParam = line.getOptionValue("sa");
             }
-            if (line.hasOption("d")) {
-                dataFileName = line.getOptionValue("d");
+            if (line.hasOption("df")) {
+                dataFileName = line.getOptionValue("df");
             }
-            if (line.hasOption("st")) {
-                structureFileName = line.getOptionValue("st");
+            if (line.hasOption("sf")) {
+                structureFileName = line.getOptionValue("sf");
             }
             if (line.hasOption("ns")) {
                 numberOfSteps = Integer.valueOf(line.getOptionValue("ns"));
@@ -72,7 +72,7 @@ public class BayesNetwork {
                 }
             }
 
-            if (line.hasOption("e")) {
+            if (line.hasOption("eo")) {
                 evalOnly = true;
             }
             if (line.hasOption("lb")) {
@@ -90,17 +90,29 @@ public class BayesNetwork {
 
         } catch (ParseException exp) {
             System.out.println("ParseException: " + exp.getMessage());
-        }
-
-        File dataFile = new File(dataFileName);
-        if (!dataFile.exists()) {
-            System.out.println("The data file that was specified could not be found! Exiting...");
             return;
         }
 
-        File structureFile = new File(dataFileName);
-        if (!structureFile.exists()) {
-            System.out.println("The structure file that was specified could not be found! Exiting...");
+        if (dataFileName != null) {
+            File dataFile = new File(dataFileName);
+            if (!dataFile.exists()) {
+                System.out.println("The data file that was specified could not be found! Exiting...");
+                return;
+            }
+        } else {
+            System.out.println("You did not specify a data file! Exiting...");
+            return;
+        }
+
+
+        if (structureFileName != null) {
+            File structureFile = new File(structureFileName);
+            if (!structureFile.exists()) {
+                System.out.println("The structure file that was specified could not be found! Exiting...");
+                return;
+            }
+        } else {
+            System.out.println("You did not specify a structure file! Exiting...");
             return;
         }
 
@@ -154,9 +166,8 @@ public class BayesNetwork {
         evaluation.convertNetworkToPDag(realNetwork);
         evaluation.evaluate();
 
-
-        //realNetwork.printNetwork();
-        //network.printNetwork();
+        realNetwork.printNetwork();
+        network.printNetwork();
     }
 
     private static void importNetworkFromCSV(Network network, String nodesFileName, String edgesFileName) {
